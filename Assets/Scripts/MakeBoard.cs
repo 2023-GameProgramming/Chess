@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Koyeonju : MonoBehaviour
+public class MakeBoard : MonoBehaviour
 {
+    public int row;
+    public int col;
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Test print text");
+        
     }
 
     // Update is called once per frame
