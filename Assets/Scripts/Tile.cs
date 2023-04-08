@@ -5,23 +5,22 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-    public enum Type { Basic, Water, Wall , Goal};
 
     [HideInInspector]
-    public Vector2 order;
+    public Vector2 coord;
 
     [SerializeField]
-    public Tile.Type type;
+    public TileAttr type;
 
-    // Start is called before the first frame update
+
+    void ChangeColor(Color col)
+    {
+        
+    }
+
     void Start()
     {
-        
+        // 시작 시 투명하게 바꾼다. 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

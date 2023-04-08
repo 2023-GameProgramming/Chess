@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MakeBoard : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
-    public int row;
-    public int col;
     // Start is called before the first frame update
     void Start()
     {

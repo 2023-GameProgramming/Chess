@@ -5,17 +5,12 @@ using UnityEditor;
 [CustomEditor(typeof(Tile))]
 public class TileEditor : Editor
 {
-    private Material basicMaterial;
-    private Material waterMaterial;
-    private Material wallMaterial;
-
-
     public override void OnInspectorGUI()
     {
         Tile tile = target as Tile;
-        EditorGUILayout.LabelField($"Order: {tile.order.x}, {tile.order.y}");
+        EditorGUILayout.LabelField($"Order: {tile.coord.x}, {tile.coord.y}");
         EditorGUI.BeginChangeCheck();
-        tile.type = (Tile.Type)EditorGUILayout.EnumPopup("Type", tile.type);
+        tile.type = (TileAttr)EditorGUILayout.EnumPopup("Type", tile.type);
         if (EditorGUI.EndChangeCheck())
         {
             SetColor();
@@ -29,16 +24,16 @@ public class TileEditor : Editor
         tile.GetComponent<Renderer>().sharedMaterial = tempMaterial;
         switch (tile.type)
         {
-            case Tile.Type.Basic:
+            case TileAttr.basic:
                 tile.GetComponent<Renderer>().sharedMaterial.color = Color.white;
                 break;
-            case Tile.Type.Water:
+            case TileAttr.water:
                 tile.GetComponent<Renderer>().sharedMaterial.color = Color.blue;
                 break;
-            case Tile.Type.Wall:
+            case TileAttr.wall:
                 tile.GetComponent<Renderer>().sharedMaterial.color = Color.black;
                 break;
-            case Tile.Type.Goal:
+            case TileAttr.goal:
                 tile.GetComponent<Renderer>().sharedMaterial.color = Color.green;
                 break;
             default:
