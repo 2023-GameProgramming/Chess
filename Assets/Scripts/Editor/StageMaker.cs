@@ -321,19 +321,19 @@ public class StageMaker : EditorWindow
         switch (tile.type)
         {
             case TileAttr.basic:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.white;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
                 break;
             case TileAttr.water:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.blue;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.blue);
                 break;
             case TileAttr.wall:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.black;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.black);
                 break;
             case TileAttr.goal:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.green;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.green);
                 break;
             default:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.white;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
                 break;
         }
     }
