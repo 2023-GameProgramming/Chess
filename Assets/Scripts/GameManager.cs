@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    #region SingleTon
+
     private static GameManager _instance;
     public static GameManager Instance
     {
@@ -16,18 +18,29 @@ public class GameManager : MonoBehaviour
             return _instance;
         }
     }
-    public GameObject enemy;
-    public Board board;
-    public Player player;
+    #endregion
+
+    public GameObject Enemies;
+    public GameObject Tiles;
+    public GameObject Player;
+
+
     public int MovingObj;
+
+
+    #region MonoBehavior
 
     void Start()
     {
-
+        Enemies = GameObject.Find("Enemies");
+        Enemies = GameObject.Find("Tiles");
+        Enemies = GameObject.Find("Player");
     }
 
     void Update()
     {
 
     }
+
+    #endregion
 }

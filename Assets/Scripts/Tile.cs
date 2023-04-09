@@ -11,8 +11,7 @@ public class Tile : MonoBehaviour
 
     [SerializeField]
     public TileAttr type;
-
-
+    
     void ChangeColor(Color col)
     {
         
@@ -20,7 +19,10 @@ public class Tile : MonoBehaviour
 
     void Start()
     {
-        // 시작 시 투명하게 바꾼다. 
+        Material mat =  GetComponent<MeshRenderer>().material =new Material(Resources.Load<Material>("Materials/Tile"));
+        Color color = mat.color;
+        color.a = 0; 
+        mat.color = color;
     }
 
 }
