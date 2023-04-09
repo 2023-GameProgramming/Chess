@@ -44,7 +44,6 @@ public class Resource
             if (_instance == null)
             {
                 _instance = new Resource();
-                _instance.Initialize();
             }
             return _instance;
         }
@@ -55,12 +54,15 @@ public class Resource
         sprite = new Dictionary<string, Sprite>();
         foreach (var info in AssetPngfiles)
         {
-            Debug.Log(info);
             Texture2D texture = new Texture2D(1, 1);
             texture.LoadImage(File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, info.path, info.name+".png")));
             sprite[info.name] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f,0.5f));
-            Debug.Log(sprite[info.name]);
+
+            if(sprite[info.name] == null)
+            {
+                Debug.Log("ErrorLoadResource : " +info.path + info.name);
+            }
         }
-        Debug.Log("Resource.Initialize");
+        Debug.Log("Resource.InitializeDone");
     }
 }

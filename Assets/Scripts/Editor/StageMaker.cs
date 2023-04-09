@@ -1,8 +1,17 @@
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+
 public class StageMaker : EditorWindow
 {
+    static Resource resource;
+
+    void Awake()
+    {
+        resource = Resource.Instance;
+        resource.Initialize();
+    }
+
     TileAttr tileType;
     ePiece pieceType;
     int delay = 1;
@@ -234,6 +243,10 @@ public class StageMaker : EditorWindow
         switch (pieceType)
         {
             case ePiece.pawn:
+                if(Resource.Instance.sprite["B_Pawn"] == null)
+                {
+                    Debug.Log("none");
+                }
                 enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.sprite["B_Pawn"];
                 break;
             case ePiece.rook:
