@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class BoardObj :MonoBehaviour
 {
+    #region EditInit
+
     [HideInInspector]
-    public Vector2 coord; // EditInit
+    public Vector2 Coord; // EditInit
     [HideInInspector]
-    public ePiece type; // EditInit
+    public ePiece Type; // EditInit
     [HideInInspector]
     public int sight; // EditInit
     [HideInInspector]
@@ -15,11 +17,30 @@ public class BoardObj :MonoBehaviour
     [HideInInspector]
     public float movetime; // EditInit
 
+    #endregion EditInit
+
+    #region MonoBehavior
+
+    private void Start()
+    {
+        GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(Type);
+    }
+
+    private void Update()
+    {
+        
+    }
+    #endregion MonoBehavior
+
+
+
+
+
 
     #region IBoardObj
     public Vector2 SetCoord(Vector2 crd) 
     {
-        coord = crd;
+        Coord = crd;
         StartCoroutine(Move());
         //GameManager.MovingObj += 1;
         return crd;

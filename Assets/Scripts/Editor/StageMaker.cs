@@ -6,12 +6,6 @@ public class StageMaker : EditorWindow
 {
     static Resource resource;
 
-    void Awake()
-    {
-        resource = Resource.Instance;
-        resource.Initialize();
-    }
-
     TileAttr tileType;
     ePiece pieceType;
     int delay = 1;
@@ -118,6 +112,33 @@ public class StageMaker : EditorWindow
         }
         #endregion
         GUILayout.Space(30);
+
+        if (GUILayout.Button("ReDraw"))
+        {
+            GameObject[] stage = GameObject.FindGameObjectsWithTag("Stage");
+            foreach (var s in stage)
+            {
+                GameObject tiles = s.transform.Find("Tiles").gameObject;
+                if (tiles != null)
+                {
+                    for (int i = 0; i < tiles.transform.childCount; i++)
+                    {
+                        Transform childTransform = tiles.transform.GetChild(i);
+                        SetColor(childTransform.GetComponent<Tile>());
+                    }
+                }
+
+                GameObject enemies = s.transform.Find("Enemies").gameObject;
+                if (enemies != null)
+                {
+                    for (int i = 0; i < enemies.transform.childCount; i++)
+                    {
+                        Transform childTransform = enemies.transform.GetChild(i);
+                        childTransform.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(childTransform.GetComponent<BoardObj>().Type);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -153,7 +174,7 @@ public class StageMaker : EditorWindow
                     }
                     else
                     {
-                        pieceType = boardobj.type;
+                        pieceType = boardobj.Type;
                         sight = boardobj.sight;
                         delay = boardobj.delay;
                         movetime = boardobj.movetime;
@@ -163,12 +184,12 @@ public class StageMaker : EditorWindow
 
                 if (boardobj == null && active2 && e.button == 0 && !e.shift)
                 {
-                    GameObject enemyPrefab = Resources.Load<GameObject>("Enemy");
+                    GameObject enemyPrefab = Resources.Load<GameObject>("Basic/Enemy");
                     GameObject enemyobj = PrefabUtility.InstantiatePrefab(enemyPrefab) as GameObject;
                     float height = enemyobj.GetComponent<SpriteRenderer>().sprite.bounds.size.y;
                     enemyobj.transform.position = new Vector3(tile.transform.position.x, height / 2, tile.transform.position.z);
                     BoardObj enemy = enemyobj.GetComponent<BoardObj>();
-                    enemy.coord =tile.coord;
+                    enemy.Coord =tile.coord;
                     SetBoardObjAttr(enemy);
                 }
             }
@@ -182,12 +203,13 @@ public class StageMaker : EditorWindow
         if (enemies == null)
         {
             enemies = new GameObject("Enemies");
+            enemies.transform.SetParent(GameObject.Find("Stage").transform);
         }
         for (int i = 0; i < enemies.transform.childCount; i++)
         {
             Transform childTransform = enemies.transform.GetChild(i);
             BoardObj boardobj = childTransform.GetComponent<BoardObj>();
-            if (boardobj.coord == coord)
+            if (boardobj.Coord == coord)
             {
                 return boardobj;
             }
@@ -197,8 +219,7 @@ public class StageMaker : EditorWindow
 
     private void OnEnable()
     {
-        SceneView.duringSceneGui += OnSceneGUI;
-
+        Resource.Instance.Initialize();
         active1 = false;
         active2 = false;
         GameObject obj = GameObject.Find("Tiles");
@@ -207,6 +228,15 @@ public class StageMaker : EditorWindow
             Board board = obj.GetComponent<Board>();
             matrix = new Vector2Int(board.col, board.row);
         }
+
+
+        obj = GameObject.Find("Stage");
+        if (obj == null)
+        {
+            GameObject stage  = new GameObject("Stage");
+            stage.tag = "Stage";
+        }
+        SceneView.duringSceneGui += OnSceneGUI;
     }
 
     private void OnDisable()
@@ -238,48 +268,24 @@ public class StageMaker : EditorWindow
     {
         enemy.delay = delay;
         enemy.sight = sight;
-        enemy.type = pieceType;
+        enemy.Type = pieceType;
         enemy.movetime = movetime;
-        switch (pieceType)
-        {
-            case ePiece.pawn:
-                if(Resource.Instance.sprite["B_Pawn"] == null)
-                {
-                    Debug.Log("none");
-                }
-                enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.sprite["B_Pawn"];
-                break;
-            case ePiece.rook:
-                enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.sprite["B_Rook"];
-                break;
-            case ePiece.bishop:
-                enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.sprite["B_Bishop"];
-                break;
-            case ePiece.knight:
-                enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.sprite["B_Knight"];
-                break;
-            case ePiece.queen:
-                enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.sprite["B_Queen"];
-                break;
-            case ePiece.king:
-                enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.sprite["B_King"];
-                break;
-            default:
-                break;
-        }
         GameObject enemies = GameObject.Find("Enemies");
         if (enemies == null)
         {
             enemies = new GameObject("Enemies");
+            enemies.transform.SetParent(GameObject.Find("Stage").transform);
+      
         }
         enemy.transform.SetParent(enemies.transform);
+        enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(pieceType);
         EditorSceneManager.MarkSceneDirty(enemy.gameObject.scene);
     }
 
     private void CreateTiles(int row, int col)
     {
         //ÇÁ¸®ÆÕ ·Îµå.
-        GameObject tilePrefab = Resources.Load<GameObject>("Tile");
+        GameObject tilePrefab = Resources.Load<GameObject>("Basic/Tile");
         GameObject tiles = GameObject.Find("Tiles");
         GameObject enemies = GameObject.Find("Enemies");
         if (tiles != null)
@@ -292,6 +298,8 @@ public class StageMaker : EditorWindow
         }
 
         tiles = new GameObject("Tiles");
+        tiles.transform.SetParent(GameObject.Find("Stage").transform);
+
         Board board = tiles.AddComponent<Board>();
         board.row = row;
         board.col = col;
@@ -316,24 +324,29 @@ public class StageMaker : EditorWindow
     }
     void SetColor(Tile tile)
     {
-        var tempMaterial = new Material(tile.GetComponent<Renderer>().sharedMaterial);
+        Material mat = tile.GetComponent<Renderer>().sharedMaterial;
+        if(mat == null)
+        {
+            mat = Resources.Load<Material>("Materials/Tile"); 
+        }
+        var tempMaterial = new Material(mat);
         tile.GetComponent<Renderer>().sharedMaterial = tempMaterial;
         switch (tile.type)
         {
             case TileAttr.basic:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.white;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
                 break;
             case TileAttr.water:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.blue;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.blue);
                 break;
             case TileAttr.wall:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.black;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.black);
                 break;
             case TileAttr.goal:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.green;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.green);
                 break;
             default:
-                tile.GetComponent<Renderer>().sharedMaterial.color = Color.white;
+                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
                 break;
         }
     }

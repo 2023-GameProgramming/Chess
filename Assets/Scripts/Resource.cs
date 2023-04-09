@@ -65,4 +65,25 @@ public class Resource
         }
         Debug.Log("Resource.InitializeDone");
     }
+
+    public Sprite GetPieceSprite(ePiece type)
+    {
+        switch (type)
+        {
+            case ePiece.pawn:
+                return sprite["B_Pawn"];
+            case ePiece.rook:
+                return sprite["B_Rook"];
+            case ePiece.bishop:
+                return sprite["B_Bishop"];
+            case ePiece.knight:
+                return sprite["B_Knight"];  
+            case ePiece.queen:
+                return sprite["B_Queen"];
+            case ePiece.king:
+                return sprite["B_King"];
+            default:
+                return sprite["B_Pawn"];
+        }
+    }
 }
