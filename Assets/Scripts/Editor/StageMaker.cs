@@ -303,7 +303,6 @@ public class StageMaker : EditorWindow
         Board board = tiles.AddComponent<Board>();
         board.row = row;
         board.col = col;
-        board.board = tiles;
         // 타일 오브젝트 생성
         for (int i = 0; i < row; i++)
         {
