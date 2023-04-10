@@ -14,7 +14,8 @@ public class Tile : MonoBehaviour
     
     void ChangeColor(Color col)
     {
-        
+        //타일 색깔을 지정.
+
     }
 
     void Start()

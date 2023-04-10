@@ -4,25 +4,20 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+
+
     [HideInInspector]
     public int row; // EditInit
     [HideInInspector]
     public int col; // EditInit
     [HideInInspector]
-    public GameObject board; // EditInit
 
     List<Tile> PosibleToMove(BoardObj obj)
     {
-        ePiece piece = obj.GetObjType();
-        int delay = obj.GetDelay();
-
+        ePiece piece = obj.Type;
+        int delay = obj.delay;
+        int sight = obj.sight;
+        // 오브젝트가 이동 가능한 타일을 리턴합니다. 타일의 속성도 고려 해야 합니다.
         return null;
-    }
-
-    bool IsAnyObj(Vector2 coord)
-    {
-        //해당 좌표 타일에 위치한 오브젝트가 있는가
-        
-        return false;
     }
 }

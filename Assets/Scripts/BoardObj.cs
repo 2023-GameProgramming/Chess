@@ -16,71 +16,51 @@ public class BoardObj :MonoBehaviour
     public int delay;  // EditInit
     [HideInInspector]
     public float movetime; // EditInit
-
     #endregion EditInit
 
-    #region MonoBehavior
+    public int turn;
+    public bool IsMoving;
 
+    #region MonoBehavior
     private void Start()
     {
+        turn = delay;
+        IsMoving = false;
         GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(Type);
-    }
-
-    private void Update()
-    {
-        
     }
     #endregion MonoBehavior
 
-
-
-
-
-
     #region IBoardObj
-    public Vector2 SetCoord(Vector2 crd) 
+
+
+    public Vector2 SetCoord(Vector2 crd)
     {
         Coord = crd;
-        StartCoroutine(Move());
-        //GameManager.MovingObj += 1;
+        // 해당 타일 위치로 이동시킨다.
         return crd;
     }
-    public int GetSight()
-    {
-        return 0;
-    }
-    public Vector2 GetCoord() 
-    {
-        return new Vector2(); 
-    }
-    public ePiece GetObjType() 
-    {
 
-        return ePiece.king;    
-    }
-    public int GetDelay() 
+    public Vector2 MoveCoord(Vector2 crd) 
     {
-        return 0;
+        Coord = crd;
+        IsMoving = true;
+        StartCoroutine(ChangeTransfrom());
+        return crd;
     }
     #endregion
 
-    IEnumerator Move()
+
+    IEnumerator ChangeTransfrom()
     {
-        float elapsedTime = 0f; // 경과 시간
+        GameManager.Instance.MovingObjNum += 1;
+        // Movetime동안 Transform 업데이트
+        float elapsedTime = 0f; 
         while (elapsedTime < movetime) 
         {
             elapsedTime += Time.deltaTime;
-            float t = elapsedTime / movetime; 
-            // Lerp 함수를 사용하여 현재 위치 계산
-            //Vector3 currentPos = Vector3.Lerp(startPos, endPos, t);
-
-            // 위치 변경
-            //target.position = currentPos;
-
-            // 다음 프레임까지 대기
-            yield return null;
+             yield return null;
         }
-        //GameManager.MovingObj -= 1;
+        IsMoving = false;
+        GameManager.Instance.MovingObjNum -= 1;
     }
-
 }
