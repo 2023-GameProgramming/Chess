@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
         // 1.마우스 입력에 따라 보는 방향을 바꿉니다.
 
         // 2.shift를 누르면 이동 가능 타일을 보여줍니다.
-
+        
         // 3.초점 맞는 타일을 그려줍니다.
 
         if(GameManager.Instance.PlayerTurn && !GetComponent<BoardObj>().IsMoving)
