@@ -13,20 +13,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        // 1.마우스 입력에 따라 보는 방향을 바꿉니다.
+        // 1.마우스에 따라 보는 방향을 바꿉니다.
 
         // 2.shift를 누르면 이동 가능 타일을 보여줍니다.
         
         // 3.초점 맞는 타일을 그려줍니다.
 
-        if(GameManager.Instance.PlayerTurn && !GetComponent<BoardObj>().IsMoving)
-        {
-            //마우스 클릭시 상황에 맞게 이동
-            GetComponent<BoardObj>().turn -=1;
-            //만약 이동한 타일에 적이 있었다면 해당 적을 삭제하고 모자를 얻음.
-        }
+        //if(GameManager.Instance.PlayerTurn && !GetComponent<BoardObj>().IsMoving)
+        //{
+        //    //마우스 클릭시 상황에 맞게 이동
+        //    GetComponent<BoardObj>().turn -=1;
+        //    //만약 이동한 타일에 적이 있었다면 해당 적을 삭제하고 모자를 얻음.
+        //}
     }
-
 
     Vector2 FocusedTileCoord()
     {
