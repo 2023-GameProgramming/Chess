@@ -204,6 +204,7 @@ public class StageMaker : EditorWindow
         {
             enemies = new GameObject("Enemies");
             enemies.transform.SetParent(GameObject.Find("Stage").transform);
+            enemies.AddComponent<Enemies>();
         }
         for (int i = 0; i < enemies.transform.childCount; i++)
         {
@@ -275,7 +276,7 @@ public class StageMaker : EditorWindow
         {
             enemies = new GameObject("Enemies");
             enemies.transform.SetParent(GameObject.Find("Stage").transform);
-      
+            enemies.AddComponent<Enemies>();
         }
         enemy.transform.SetParent(enemies.transform);
         enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(pieceType);
