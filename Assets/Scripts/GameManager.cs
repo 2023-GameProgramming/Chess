@@ -43,40 +43,40 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        if (Player.GetComponent<BoardObj>().turn == 0)
-        {
-            //if 적이 아무도 움직일 수 없고 MovingObjNum가 0인 경우
-            PlayerTurn = true;
-            Player.GetComponent<BoardObj>().turn = Player.GetComponent<BoardObj>().delay;
-            //else 그것이 아니라면
-            if ((MovingObjNum == 1 && Player.GetComponent<BoardObj>().IsMoving) ||
-                MovingObjNum == 0)
-            {
-                GameObject enemy = Enemies.GetAttacker();
-                if (enemy != null)
-                {
-                    if (MovingObjNum == 0)
-                    {
-                        Player.OnAttacked(new Vector2());
-                        //enemy turn 초기화
-                    }
-                    else
-                    {
-                        //enemy.MoveCoord
-                    }
-                }
-                else
-                {
-                    Enemies.GetChecker();
-                    Enemies.GetRandomMover();
-                    //플레이어를 체크할 수 있는 enemy를 움직여 줍니다.
-                    //나머지는 랜덤하게 움직여줍니다.
-                    //움직여주었으면 enemy의 턴을 초기화합니다.
-                }
-            }
-        }
-        // 플레이어 위치가 골인 지점이면
-        Clear();
+        //if (Player.GetComponent<BoardObj>().turn == 0)
+        //{
+        //    //if 적이 아무도 움직일 수 없고 MovingObjNum가 0인 경우
+        //    PlayerTurn = true;
+        //    Player.GetComponent<BoardObj>().turn = Player.GetComponent<BoardObj>().delay;
+        //    //else 그것이 아니라면
+        //    if ((MovingObjNum == 1 && Player.GetComponent<BoardObj>().IsMoving) ||
+        //        MovingObjNum == 0)
+        //    {
+        //        GameObject enemy = Enemies.GetAttacker();
+        //        if (enemy != null)
+        //        {
+        //            if (MovingObjNum == 0)
+        //            {
+        //                Player.OnAttacked(new Vector2());
+        //                //enemy turn 초기화
+        //            }
+        //            else
+        //            {
+        //                //enemy.MoveCoord
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Enemies.GetChecker();
+        //            Enemies.GetRandomMover();
+        //            //플레이어를 체크할 수 있는 enemy를 움직여 줍니다.
+        //            //나머지는 랜덤하게 움직여줍니다.
+        //            //움직여주었으면 enemy의 턴을 초기화합니다.
+        //        }
+        //    }
+        //}
+        //// 플레이어 위치가 골인 지점이면
+        //Clear();
     }
     void Clear()
     {
@@ -92,6 +92,7 @@ public class GameManager : MonoBehaviour
         Enemies = CurrentStage.transform.Find("Enemies").GetComponent<Enemies>();
         Tiles = CurrentStage.transform.Find("Tiles").GetComponent<Board>();
         Player.GetComponent<BoardObj>().turn = Player.GetComponent<BoardObj>().delay;
+        //플레이어 좌표를 새 스테이지 맞게 설정
     }
     #endregion
 }

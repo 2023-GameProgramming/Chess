@@ -4,9 +4,14 @@ using UnityEngine;
 
 public class Enemies : MonoBehaviour
 {
+
+    public bool IsAnyObj(Vector2 crd)
+    {
+        return false;
+    }
+
     bool IsAnyMover()
     {
-        // 움직 일 수 있는 적이 있다면 true 반환.
         return false;
     }
 

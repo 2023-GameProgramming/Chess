@@ -5,7 +5,6 @@ using UnityEngine;
 public class BoardObj :MonoBehaviour
 {
     #region EditInit
-
     [HideInInspector]
     public Vector2 Coord; // EditInit
     [HideInInspector]
@@ -42,6 +41,7 @@ public class BoardObj :MonoBehaviour
 
     public Vector2 MoveCoord(Vector2 crd) 
     {
+        //SetCoord와 비슷하지만,movetime에 따라 실시간으로 이동한다.
         Coord = crd;
         IsMoving = true;
         StartCoroutine(ChangeTransfrom());
@@ -53,7 +53,8 @@ public class BoardObj :MonoBehaviour
     IEnumerator ChangeTransfrom()
     {
         GameManager.Instance.MovingObjNum += 1;
-        // Movetime동안 Transform 업데이트
+        // Movetime동안 Transform 업데이트합니다.
+        // 이동이 linear해도 좋고, https://easings.net 를 참고해서 역동적으로 움직여도 좋습니다
         float elapsedTime = 0f; 
         while (elapsedTime < movetime) 
         {
