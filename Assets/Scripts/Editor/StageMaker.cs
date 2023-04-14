@@ -115,6 +115,7 @@ public class StageMaker : EditorWindow
 
         if (GUILayout.Button("ReDraw"))
         {
+            Resource.Instance.Initialize();
             GameObject[] stage = GameObject.FindGameObjectsWithTag("Stage");
             foreach (var s in stage)
             {
@@ -285,7 +286,7 @@ public class StageMaker : EditorWindow
 
     private void CreateTiles(int row, int col)
     {
-        //ÇÁ¸®ÆÕ ·Îµå.
+        //í”„ë¦¬íŒ¹ ë¡œë“œ.
         GameObject tilePrefab = Resources.Load<GameObject>("Basic/Tile");
         GameObject tiles = GameObject.Find("Tiles");
         GameObject enemies = GameObject.Find("Enemies");
@@ -304,7 +305,7 @@ public class StageMaker : EditorWindow
         Board board = tiles.AddComponent<Board>();
         board.row = row;
         board.col = col;
-        // Å¸ÀÏ ¿ÀºêÁ§Æ® »ı¼º
+        // íƒ€ì¼ ì˜¤ë¸Œì íŠ¸ ìƒì„±
         for (int i = 0; i < row; i++)
         {
             for (int k = 0; k < col; k++)
@@ -312,12 +313,12 @@ public class StageMaker : EditorWindow
                 GameObject tileObject = PrefabUtility.InstantiatePrefab(tilePrefab) as GameObject;
                 Tile t = tileObject.GetComponent<Tile>();
                 t.coord = new Vector2(i, k);
-                // MeshÀÇ bounds¸¦ ÀÌ¿ëÇÏ¿© quad ¿ÀºêÁ§Æ®ÀÇ ±æÀÌ¸¦ ±¸ÇÑ´Ù.
+                // Meshì˜ boundsë¥¼ ì´ìš©í•˜ì—¬ quad ì˜¤ë¸Œì íŠ¸ì˜ ê¸¸ì´ë¥¼ êµ¬í•œë‹¤.
                 MeshRenderer meshRenderer = tileObject.GetComponent<MeshRenderer>();
-                // Å¸ÀÏ ¿ÀºêÁ§Æ®ÀÇ À§Ä¡ ¼³Á¤
+                // íƒ€ì¼ ì˜¤ë¸Œì íŠ¸ì˜ ìœ„ì¹˜ ì„¤ì •
                 float tileLength = meshRenderer.bounds.size.x;
                 tileObject.transform.position = new Vector3(k * tileLength, 0, i * tileLength);
-                //Å¸ÀÏ ¿ÀºêÁ§Æ®¸¦ Å¸ÀÏ½º ¿ÀºêÁ§Æ®¿¡ ÀÚ½ÄÀ¸·Î ³Ö´Â´Ù.
+                //íƒ€ì¼ ì˜¤ë¸Œì íŠ¸ë¥¼ íƒ€ì¼ìŠ¤ ì˜¤ë¸Œì íŠ¸ì— ìì‹ìœ¼ë¡œ ë„£ëŠ”ë‹¤.
                 tileObject.transform.SetParent(tiles.transform);
             }
         }
