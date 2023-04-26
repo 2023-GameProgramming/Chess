@@ -4,60 +4,239 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    Dictionary<string, int> hat;
+
+    public bool Isalive;
+
+    Dictionary<ePiece, int> hat;
+    int hatIndex;
+    List<GameObject> MovableTile;
+    List<GameObject> Temp2MovableTile;
+    List<GameObject> CurrentDrawTile;
+
+    GameObject focusTile;
+
+    bool dirMove;
 
     private void Start()
     {
-        
+        dirMove = false;
+        Isalive = true;
+        MovableTile = new List<GameObject>();
+        hatIndex = ((int)ePiece.king);
+        GetComponent<BoardObj>().Type = ePiece.king;
+        hat = new Dictionary<ePiece, int>();
+        hat.Add(ePiece.pawn, 1);
+        hat.Add(ePiece.rook, 1);
+        hat.Add(ePiece.bishop, 1);
+        hat.Add(ePiece.knight, 1);
+        hat.Add(ePiece.queen, 1);
+        hat.Add(ePiece.king, 1);
     }
 
     private void Update()
     {
-        // 1.마우스에 따라 보는 방향을 바꿉니다.
+        SetTilesColor(MovableTile, ColTile.basic);
+        if (MovableTile.Count == 0) { MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());}
 
-        // 2.shift를 누르면 이동 가능 타일을 보여줍니다.
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            if (dirMove)
+            {
+                GetComponent<BoardObj>().DecreaseTurn();
+                SetTilesColor(MovableTile, ColTile.basic);
+                MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
+                dirMove = false;
+            }
+        }
+        if ( !GameManager.Instance.PlayerTurn || GetComponent<BoardObj>().IsMoving)
+        {
+            focusTile?.GetComponent<Tile>().ChangeColor(ColTile.basic);
+            focusTile = null;
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
+        {
+            SwitchHat();
+            SetTilesColor(MovableTile, ColTile.basic);
+            MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
+        }
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            SetTilesColor(MovableTile, ColTile.movable);
+        }
+        SetFocusTileColor();
+        if (focusTile != null && Input.GetMouseButtonDown(0) && MovableTile.IndexOf(focusTile)>=0)
+        {
+            if(GetComponent<BoardObj>().Type == ePiece.pawn || GetComponent<BoardObj>().Type == ePiece.king|| GetComponent<BoardObj>().Type == ePiece.knight ||
+                !Input.GetKey(KeyCode.LeftShift))
+            {
+                GetComponent<BoardObj>().DecreaseTurn();
+                SetTilesColor(MovableTile, ColTile.basic);
+                GetComponent<BoardObj>().MoveCoord(focusTile.GetComponent<Tile>().Coord);
+                MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
+            }
+            else
+            {
+                Vector2Int dir = GameManager.Instance.board.GetCrdDir(GetComponent<BoardObj>().Coord, focusTile.GetComponent<Tile>().Coord);
+                List<GameObject> newMovableTile = new List<GameObject>();
+                foreach(var v in MovableTile)
+                {
+                    if(GameManager.Instance.board.GetCrdDir(focusTile.GetComponent<Tile>().Coord, v.GetComponent<Tile>().Coord) == dir)
+                    {
+                        newMovableTile.Add(v);
+                    }
+                }
+                SetTilesColor(MovableTile, ColTile.basic);
+                MovableTile = newMovableTile;
+                if(MovableTile.Count ==0)
+                {
+                    GetComponent<BoardObj>().DecreaseTurn();
+                    dirMove = false;
+                }
+                dirMove = true;
+                GetComponent<BoardObj>().MoveCoord(focusTile.GetComponent<Tile>().Coord);
+                if(GameManager.Instance.enemies.GetObj(focusTile.GetComponent<Tile>().Coord))
+                {
+                    SetTilesColor(MovableTile, ColTile.basic);
+                    GetComponent<BoardObj>().DecreaseTurn();
+                    MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
+                }
+            }
+        }
+    }
+
+
+    public void CaptureEnemy(GameObject enemy)
+    {
+        if (enemy != null)
+        {
+            AcquireHat(enemy.GetComponent<BoardObj>().Type);
+            GlobalFuction.SafeDestroy(enemy);
+        }
+    }
+    public void OnAttacked(Vector2Int destCrd)
+    {
+        LooseRandomHat();
+        Isalive = SwitchHat();
+        SetTilesColor(MovableTile, ColTile.basic);
+        GetComponent<BoardObj>().MoveCoord(destCrd);
+        MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
+    }
+
+    void SetFocusTileColor()
+    {
+        if (focusTile != null)
+        {
+            focusTile.GetComponent<Tile>().ChangeColor(ColTile.basic);
+            focusTile = null;
+        }
+        Vector3 mousePosition = Input.mousePosition;
+       Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        int layerMask = LayerMask.GetMask("Tile");
+        if (Input.GetKey(KeyCode.LeftShift) && Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, layerMask))
+        {
+            focusTile = hitInfo.collider.gameObject;
+            if (MovableTile.IndexOf(focusTile) < 0)
+            {
+                focusTile.GetComponent<Tile>().ChangeColor(ColTile.unmovable);
+            }
+            else
+            {
+                focusTile.GetComponent<Tile>().ChangeColor(ColTile.focus);
+            }
+        }
+        else
+        {
+
+            GameObject neartile = null;
+            float nearangle = 360.0f;
+            foreach (var v in MovableTile)
+            {
+                Vector2 tiledir = Vector2.zero;
+                tiledir.x = (v.transform.position.x - transform.position.x);
+                tiledir.y = (v.transform.position.z - transform.position.z);
+                Vector2 raydir = Vector2.zero;
+                raydir.x = ray.direction.x;
+                raydir.y = ray.direction.z;
+
+                float dot = Vector3.Dot(tiledir.normalized, raydir.normalized);
+                float rad = Mathf.Acos(dot);
+                float angle = rad * Mathf.Rad2Deg;
+                if (angle < 45 && nearangle > angle )
+                {
+                    if(neartile == null||
+                        (neartile != null && 
+                        (neartile.transform.position - transform.position).sqrMagnitude > (v.transform.position - transform.position).sqrMagnitude)) 
+                    {
+                        nearangle = angle;
+                        neartile = v;
+                    }
+                }
+            }
+            focusTile = neartile;
+            focusTile?.GetComponent<Tile>().ChangeColor(ColTile.focus);
+        }
+    }
+
+    void SetTilesColor(List<GameObject> list,Color col)
+    {
+        foreach (var v in list)
+        {
+            v.GetComponent<Tile>().ChangeColor(col);
+        }
+    }
+
+    void LooseRandomHat()
+    {
+        List<ePiece> myhatList = new List<ePiece>();
+        for (int i = 0; i < System.Enum.GetNames(typeof(ePiece)).Length; i++)
+        {
+            if(hat[(ePiece)i]==1)
+            {
+                myhatList.Add((ePiece)i);
+            }
+        }
         
-        // 3.초점 맞는 타일을 그려줍니다.
-
-        //if(GameManager.Instance.PlayerTurn && !GetComponent<BoardObj>().IsMoving)
-        //{
-        //    //마우스 클릭시 상황에 맞게 이동
-        //    GetComponent<BoardObj>().turn -=1;
-        //    //만약 이동한 타일에 적이 있었다면 해당 적을 삭제하고 모자를 얻음.
-        //}
+        if(myhatList.Count !=0)
+        {
+            int random = Random.Range(0, myhatList.Count);
+            hat[myhatList[random]] = 0;
+        }
+        else
+        {
+            hat[ePiece.king] = 0;
+        }
     }
-
-    Vector2 FocusedTileCoord()
+    bool SwitchHat()
     {
-        // 플레이어가 초점을 맞춘 타일을 반환합니다.
-        return new Vector2();
+        int finedType = -1;
+        for (int i = 0; i <= System.Enum.GetNames(typeof(ePiece)).Length; i++)
+        {
+            hatIndex += 1;
+            if (hatIndex > ((int)ePiece.king))
+            {
+                hatIndex = ((int)ePiece.pawn);
+            }
+            if (hat[(ePiece)hatIndex] == 1)
+            {
+                finedType = hatIndex;
+                break;
+            }
+        }
+        if (finedType == -1)
+        {
+            return false;
+        }
+        GetComponent<BoardObj>().Type = (ePiece)finedType;
+        Debug.Log($" changed :  { (ePiece)finedType }");
+        return true;
     }
-    void ShowTileColor()
+    void AcquireHat(ePiece type)
     {
-        /*
-         상황에 따른 타일 색을 띄워 줍니다.
-        이동 불가 // red
-        이동 가능 // green 인데 좀 투명하게
-        sight 타일 // green
-         */
-    }
-    
-    public void OnAttacked(Vector2 dir)
-    {
-        /*
-         피격시 호출되는 코드입니다.
-        랜덤한 모자의 개수를 줄입니다.
-        피격돈 방향으로 2Tile 밀려나게 만듭니다.
-         */
-    }
-
-    ePiece SwitchHat(ePiece type)
-    {
-        // 현재 장착한 해당 타입의 모자로 바꿉니다.    
-        return ePiece.king;
-    }
-    void AcquireHat(string hat)
-    {
-        //모자를 얻습니다.
+        int num = hat[type];
+        if (num == 0)
+        {
+            hat[type] = 1;
+        }
     }
 }

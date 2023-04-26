@@ -1,9 +1,10 @@
-using System.Collections;
+
+
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class Resource
+public class Resource 
 {
     public Dictionary<string, Sprite> sprite;
 
@@ -48,7 +49,6 @@ public class Resource
             return _instance;
         }
     }
-
     public void Initialize()
     {
         sprite = new Dictionary<string, Sprite>();

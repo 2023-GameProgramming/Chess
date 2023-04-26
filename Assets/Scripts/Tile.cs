@@ -5,23 +5,30 @@ using UnityEngine;
 
 public class Tile : MonoBehaviour
 {
-
     [HideInInspector]
-    public Vector2 coord;
+    public Vector2Int Coord; //Edit Init
 
-    [SerializeField]
-    public TileAttr type;
-    
-    void ChangeColor(Color col)
+    //[HideInInspector]
+    public eTileAttr Type; //Edit Init
+
+    public bool IsPossibleToMove()
     {
-        //타일 메터리얼 색깔 지정.
+        return (Type == eTileAttr.basic) || (Type == eTileAttr.goal) || (Type == eTileAttr.Start);
     }
-
+    
+    public void ChangeColor(Color col)
+    {
+        Material mat = GetComponent<MeshRenderer>().material;
+        if (mat.color != col)
+        {
+            mat.color = col;
+        }
+    }
     void Start()
     {
-        Material mat =  GetComponent<MeshRenderer>().material =new Material(Resources.Load<Material>("Materials/Tile"));
+        Material mat = GetComponent<MeshRenderer>().material = new Material(Resources.Load<Material>("Materials/Tile"));
         Color color = mat.color;
-        color.a = 0; 
+        color.a = 0;
         mat.color = color;
     }
 

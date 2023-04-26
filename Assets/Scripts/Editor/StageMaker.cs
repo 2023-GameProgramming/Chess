@@ -4,9 +4,8 @@ using UnityEditor.SceneManagement;
 
 public class StageMaker : EditorWindow
 {
-    static Resource resource;
-
-    TileAttr tileType;
+    Vector2Int matrix;
+    eTileAttr tileType;
     ePiece pieceType;
     int delay = 1;
     float movetime = 1;
@@ -16,17 +15,23 @@ public class StageMaker : EditorWindow
     private bool active2;
     GUIStyle style1;
     GUIStyle style2;
-    Vector2Int matrix;
+    private void OnEnable()
+    {
+        EditorPrefs.DeleteAll();
+        Resource.Instance.Initialize();
+        active1 = false;
+        active2 = false;
+        SceneView.duringSceneGui += OnSceneGUI;
+    }
+
+    private void OnDisable()
+    {
+        SceneView.duringSceneGui -= OnSceneGUI;
+    }
 
 
-    bool repaint = false;
     private void OnGUI()
     {
-        if (repaint)
-        { 
-            Repaint();
-            repaint = false;
-        }
         if (style1 == null)
         {
             style1 = new GUIStyle(GUI.skin.button) { normal = new GUIStyleState() { textColor = Color.yellow } };
@@ -37,11 +42,10 @@ public class StageMaker : EditorWindow
         }
 
         #region MakeBoard
-
-        matrix = EditorGUILayout.Vector2IntField("MakeBoard", matrix);
+        matrix = EditorGUILayout.Vector2IntField("MakeBoard col : row", matrix);
         if (GUILayout.Button("MakeNewBoard"))
         {
-            CreateTiles(matrix.y, matrix.x);
+            CreateTiles(matrix.x, matrix.y);
         }
         #endregion
 
@@ -58,7 +62,7 @@ public class StageMaker : EditorWindow
         }
 
         EditorGUI.BeginChangeCheck();
-        tileType = (TileAttr)EditorGUILayout.EnumPopup("Choose", tileType);
+        tileType = (eTileAttr)EditorGUILayout.EnumPopup("Choose", tileType);
         if (EditorGUI.EndChangeCheck())
         {
             if (Selection.activeGameObject != null)
@@ -66,7 +70,7 @@ public class StageMaker : EditorWindow
                 Tile tile;
                 if (Selection.activeGameObject.TryGetComponent<Tile>(out tile))
                 {
-                    tile.type = tileType;
+                    SetTileAttr(tile);
                     SetColor(tile);
                 }
             }
@@ -100,14 +104,12 @@ public class StageMaker : EditorWindow
                 Tile tile;
                 if (Selection.activeGameObject.TryGetComponent<Tile>(out tile))
                 {
-                    boardobj = FindEnemy(tile.coord);
+                    boardobj = FindEnemy(tile);
                     if (boardobj != null)
                     {
                         SetBoardObjAttr(boardobj);
                     }
                 }
-
-
             }
         }
         #endregion
@@ -136,37 +138,41 @@ public class StageMaker : EditorWindow
                     {
                         Transform childTransform = enemies.transform.GetChild(i);
                         childTransform.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(childTransform.GetComponent<BoardObj>().Type);
+
+                        Vector3 pos = GetTilePos(childTransform.parent.parent.gameObject, childTransform.GetComponent<BoardObj>().Coord);
+                        pos.y += childTransform.GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2;
+                        childTransform.transform.position = pos;
                     }
                 }
             }
         }
     }
-
+    void SetTileAttr(Tile tile)
+    {
+        tile.Type = tileType;
+        EditorUtility.SetDirty(tile);
+    }
 
     private void OnSceneGUI(SceneView sceneView)
     {
         Event e = Event.current;
         GameObject obj = GetClickedObj(e);
-        if (active1)
-        {
-            if (obj != null)
-            {
-                Tile tile = obj.GetComponent<Tile>();
-                if (tile != null)
-                {
-                    tile.type = tileType;
-                    SetColor(tile);
-                    EditorSceneManager.MarkSceneDirty(obj.scene);
-                }
-            }
-        }
-
         if (obj != null)
         {
             Tile tile = obj.GetComponent<Tile>();
             if (tile != null)
             {
-                BoardObj boardobj = FindEnemy(tile.coord);
+                if (active1)
+                {
+                    SetTileAttr(tile);
+                    SetColor(tile);
+                }
+                if (tileType != tile.Type)
+                {
+                    tileType = tile.Type;
+                    Repaint();
+                }
+                BoardObj boardobj = FindEnemy(tile);
                 if (boardobj != null && e.button == 0)
                 {
                     if (e.shift && active2)
@@ -187,26 +193,46 @@ public class StageMaker : EditorWindow
                 {
                     GameObject enemyPrefab = Resources.Load<GameObject>("Basic/Enemy");
                     GameObject enemyobj = PrefabUtility.InstantiatePrefab(enemyPrefab) as GameObject;
-                    float height = enemyobj.GetComponent<SpriteRenderer>().sprite.bounds.size.y;
-                    enemyobj.transform.position = new Vector3(tile.transform.position.x, height / 2, tile.transform.position.z);
+                    enemyobj.transform.position = new Vector3(tile.transform.position.x, enemyobj.GetComponent<SpriteRenderer>().sprite.bounds.size.y/2 + tile.transform.position.y, tile.transform.position.z);
                     BoardObj enemy = enemyobj.GetComponent<BoardObj>();
-                    enemy.Coord =tile.coord;
+                    GameObject stage = tile.transform.parent.parent.gameObject;
+                    enemy.Coord = tile.Coord;
+                    Transform enemiesTrans = stage.transform.Find("Enemies");
+                    GameObject enemies = null;
+                    if (enemiesTrans == null)
+                    {
+                        enemies = new GameObject("Enemies");
+                        enemies.transform.SetParent(stage.transform);
+                        enemies.AddComponent<Enemies>();
+                    }
+                    else
+                    {
+                        enemies = enemiesTrans.gameObject;
+                    }
+                    enemy.transform.SetParent(enemies.transform);
                     SetBoardObjAttr(enemy);
                 }
             }
         }
-
     }
 
-    BoardObj FindEnemy(Vector2 coord)
+    BoardObj FindEnemy(Tile tile)
     {
-        GameObject enemies = GameObject.Find("Enemies");
-        if (enemies == null)
+        GameObject stage = tile.transform.parent.parent.gameObject;
+        Vector2 coord = tile.Coord;
+        Transform enemiesTrans = stage.transform.Find("Enemies");
+        GameObject enemies = null;
+        if (enemiesTrans == null)
         {
             enemies = new GameObject("Enemies");
-            enemies.transform.SetParent(GameObject.Find("Stage").transform);
+            enemies.transform.SetParent(stage.transform);
             enemies.AddComponent<Enemies>();
         }
+        else
+        {
+            enemies = enemiesTrans.gameObject;
+        }
+
         for (int i = 0; i < enemies.transform.childCount; i++)
         {
             Transform childTransform = enemies.transform.GetChild(i);
@@ -219,32 +245,6 @@ public class StageMaker : EditorWindow
         return null;
     }
 
-    private void OnEnable()
-    {
-        Resource.Instance.Initialize();
-        active1 = false;
-        active2 = false;
-        GameObject obj = GameObject.Find("Tiles");
-        if (obj != null)
-        {
-            Board board = obj.GetComponent<Board>();
-            matrix = new Vector2Int(board.col, board.row);
-        }
-
-
-        obj = GameObject.Find("Stage");
-        if (obj == null)
-        {
-            GameObject stage  = new GameObject("Stage");
-            stage.tag = "Stage";
-        }
-        SceneView.duringSceneGui += OnSceneGUI;
-    }
-
-    private void OnDisable()
-    {
-        SceneView.duringSceneGui -= OnSceneGUI;
-    }
 
     [MenuItem("Window/Custom/StageMaker")]
     public static void ShowWindow()
@@ -266,41 +266,50 @@ public class StageMaker : EditorWindow
             }
         }
     }
+
+
+    Vector3 GetTilePos(GameObject stage,Vector2Int crd)
+    {
+        GameObject tiles = stage.transform.Find("Tiles").gameObject;
+        if (tiles != null)
+        {
+            for (int i = 0; i < tiles.transform.childCount; i++)
+            {
+                if(tiles.transform.GetChild(i).GetComponent<Tile>().Coord == crd)
+                {
+                    return tiles.transform.GetChild(i).transform.position;
+                }
+            }
+        }
+        return Vector3.zero;
+    }
+
     void SetBoardObjAttr(BoardObj enemy)
     {
         enemy.delay = delay;
         enemy.sight = sight;
         enemy.Type = pieceType;
         enemy.movetime = movetime;
-        GameObject enemies = GameObject.Find("Enemies");
-        if (enemies == null)
-        {
-            enemies = new GameObject("Enemies");
-            enemies.transform.SetParent(GameObject.Find("Stage").transform);
-            enemies.AddComponent<Enemies>();
-        }
-        enemy.transform.SetParent(enemies.transform);
         enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(pieceType);
-        EditorSceneManager.MarkSceneDirty(enemy.gameObject.scene);
+        Vector3 pos = GetTilePos(enemy.transform.parent.parent.gameObject, enemy.Coord);
+        pos.y += enemy.GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2;
+        enemy.transform.position = pos;
+        EditorUtility.SetDirty(enemy);
     }
 
-    private void CreateTiles(int row, int col)
+    private void CreateTiles(int col, int row)
     {
+        GameObject stage = new GameObject("Stage");
+        stage.tag = "Stage";
         //프리팹 로드.
-        GameObject tilePrefab = Resources.Load<GameObject>("Basic/Tile");
-        GameObject tiles = GameObject.Find("Tiles");
-        GameObject enemies = GameObject.Find("Enemies");
-        if (tiles != null)
-        {
-            DestroyImmediate(tiles);
-        }
-        if (enemies != null)
-        {
-            DestroyImmediate(enemies);
-        }
 
-        tiles = new GameObject("Tiles");
-        tiles.transform.SetParent(GameObject.Find("Stage").transform);
+        GameObject enemies = new GameObject("Enemies");
+        enemies.AddComponent<Enemies>();
+        enemies.transform.SetParent(stage.transform);
+
+        GameObject tilePrefab = Resources.Load<GameObject>("Basic/Tile");
+        GameObject tiles = new GameObject("Tiles");
+        tiles.transform.SetParent(stage.transform);
 
         Board board = tiles.AddComponent<Board>();
         board.row = row;
@@ -312,7 +321,7 @@ public class StageMaker : EditorWindow
             {
                 GameObject tileObject = PrefabUtility.InstantiatePrefab(tilePrefab) as GameObject;
                 Tile t = tileObject.GetComponent<Tile>();
-                t.coord = new Vector2(i, k);
+                t.Coord = new Vector2Int(k, i);
                 // Mesh의 bounds를 이용하여 quad 오브젝트의 길이를 구한다.
                 MeshRenderer meshRenderer = tileObject.GetComponent<MeshRenderer>();
                 // 타일 오브젝트의 위치 설정
@@ -325,29 +334,41 @@ public class StageMaker : EditorWindow
     }
     void SetColor(Tile tile)
     {
-        Material mat = tile.GetComponent<Renderer>().sharedMaterial;
-        if(mat == null)
+        Material mat;
+        if (Application.isPlaying)
         {
-            mat = Resources.Load<Material>("Materials/Tile"); 
+            mat = tile.GetComponent<Renderer>().material;
         }
-        var tempMaterial = new Material(mat);
-        tile.GetComponent<Renderer>().sharedMaterial = tempMaterial;
-        switch (tile.type)
+        else
         {
-            case TileAttr.basic:
-                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
+            mat = tile.GetComponent<Renderer>().sharedMaterial;
+            if (mat == null)
+            {
+                mat = Resources.Load<Material>("Materials/Tile");
+                mat = new Material(mat);
+                tile.GetComponent<Renderer>().sharedMaterial = mat;
+            }
+        }
+
+        switch (tile.Type)
+        {
+            case eTileAttr.basic:
+                mat.SetColor("_Color", Color.white);
                 break;
-            case TileAttr.water:
-                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.blue);
+            case eTileAttr.water:
+                mat.SetColor("_Color", Color.blue);
                 break;
-            case TileAttr.wall:
-                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.black);
+            case eTileAttr.wall:
+                mat.SetColor("_Color", Color.black);
                 break;
-            case TileAttr.goal:
-                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.green);
+            case eTileAttr.goal:
+                mat.SetColor("_Color", Color.green);
+                break;
+            case eTileAttr.Start:
+                mat.SetColor("_Color", Color.yellow);
                 break;
             default:
-                tile.GetComponent<Renderer>().sharedMaterial.SetColor("_Color", Color.white);
+                mat.SetColor("_Color", Color.white);
                 break;
         }
     }

@@ -13,11 +13,32 @@ public enum ePiece
     king
 }
 
-public enum TileAttr
+public enum eTileAttr
 {
     basic,
     water,
     wall,
-    goal
+    goal,
+    Start,
 }
 
+public class ColTile
+{
+    public static Color basic = Color.clear;
+    public static Color movable = Color.green;
+    public static Color unmovable = Color.red;
+    public static Color focus = Color.cyan;
+}
+
+
+public class GlobalFuction
+{
+    public static void SafeDestroy(GameObject obj)
+    {
+        obj.transform.SetParent(null);
+        obj.name = null;
+        obj.SetActive(false);
+        GameObject.Destroy(obj);
+    }
+
+}
