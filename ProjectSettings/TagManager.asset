@@ -5,11 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Stage
+  - Tile
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Tile
   - Water
   - UI
   - 

@@ -6,6 +6,6 @@ public class BillBoard : MonoBehaviour
 {
     void Update()
     {
-       // 카메라 위치를 향해 rotation 
+        transform.LookAt(new Vector3(Camera.main.transform.position.x, transform.position.y, Camera.main.transform.position.z));
     }
 }
