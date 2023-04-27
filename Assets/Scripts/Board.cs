@@ -311,20 +311,20 @@ public class Board : MonoBehaviour
         if (sight == -1) { sight = (row > col ? row : col); }
         if (sight == 0) { return; }
         Vector2Int coord = obj.Coord;
-        // ÀûÀÌ ÀÖÀ» ¶§¸¸ ´ë°¢¼± ÀÌµ¿ °¡´É
+        // ì ì´ ìˆì„ ë•Œë§Œ ëŒ€ê°ì„  ì´ë™ ê°€ëŠ¥
         Vector2Int nextCrd = new Vector2Int(coord.x + 1, coord.y + 1);
         GameObject nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
-        if (nextCrdObj != null)
+        if (nextCrdObj != null || GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
         {
             CheckMovableTile(obj, nextCrd, possibleTiles);
         }
         nextCrd = new Vector2Int(coord.x - 1, coord.y + 1);
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
-        if (nextCrdObj != null)
+        if (nextCrdObj != null || GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
         {
             CheckMovableTile(obj, nextCrd, possibleTiles);
         }
-        //ÀûÀÌ ¾øÀ» ¶§¸¸ Á÷Áø °¡´É
+        //ì ì´ ì—†ì„ ë•Œë§Œ ì§ì§„ ê°€ëŠ¥
         nextCrd = new Vector2Int(coord.x, coord.y + 1);
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
         if (nextCrdObj == null)
