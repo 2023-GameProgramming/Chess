@@ -327,7 +327,7 @@ public class Board : MonoBehaviour
         //적이 없을 때만 직진 가능
         nextCrd = new Vector2Int(coord.x, coord.y + 1);
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
-        if (nextCrdObj == null)
+        if (nextCrdObj == null || !GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
         {
             CheckMovableTile(obj, nextCrd, possibleTiles);
         }
