@@ -341,13 +341,9 @@ public class StageMaker : EditorWindow
         }
         else
         {
-            mat = tile.GetComponent<Renderer>().sharedMaterial;
-            if (mat == null)
-            {
-                mat = Resources.Load<Material>("Materials/Tile");
-                mat = new Material(mat);
-                tile.GetComponent<Renderer>().sharedMaterial = mat;
-            }
+            mat = Resources.Load<Material>("Materials/Tile");
+            mat = new Material(mat);
+            tile.GetComponent<Renderer>().sharedMaterial = mat;
         }
 
         switch (tile.Type)

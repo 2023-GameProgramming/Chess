@@ -111,7 +111,7 @@ public class Player : MonoBehaviour
         if (enemy != null)
         {
             AcquireHat(enemy.GetComponent<BoardObj>().Type);
-            GlobalFuction.SafeDestroy(enemy);
+            GameManager.Instance.enemies.KillEnemy(enemy);
         }
     }
     public void OnAttacked(Vector2Int destCrd)

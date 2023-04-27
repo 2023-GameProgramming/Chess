@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,8 @@ public class BoardObj :MonoBehaviour
     public int turn;
     [HideInInspector]
     public bool IsMoving;
+
+    public event Action<GameObject, Vector2Int, Vector2Int> OnMoveCoord;
 
     Vector3 startPoint;
     Vector3 endPoint;
@@ -66,6 +69,7 @@ public class BoardObj :MonoBehaviour
 
     public Vector2 MoveCoord(Vector2Int crd) 
     {
+        OnMoveCoord?.Invoke(gameObject,Coord, crd);
         Coord = crd;
         IsMoving = true;
         startPoint = transform.position;
