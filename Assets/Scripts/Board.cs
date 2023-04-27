@@ -17,25 +17,21 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         TileList = new GameObject[row, col];
-        for (int i = 0; i < transform.childCount; i++)
+        Tile[] tileObjs = GetComponentsInChildren<Tile>();
+        foreach (Tile tileObj in tileObjs)
         {
-            GameObject childobj = transform.GetChild(i).gameObject;
-            // 자식 오브젝트에 대한 작업 수행
-            Tile childTile = childobj.GetComponent<Tile>();
-            Vector2Int crd = childTile.Coord;
-            TileList[crd.y, crd.x] = childobj;
+            Vector2Int crd = tileObj.Coord;
+            TileList[crd.y, crd.x] = tileObj.gameObject;
         }
     }
     public Vector2Int GetStartCoord()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        Tile[] tileObjs = GetComponentsInChildren<Tile>();
+        foreach (Tile tileObj in tileObjs)
         {
-            GameObject childobj = transform.GetChild(i).gameObject;
-            // 자식 오브젝트에 대한 작업 수행
-            Tile childTile = childobj.GetComponent<Tile>();
-            if (childTile.Type == eTileAttr.Start)
+            if (tileObj.Type == eTileAttr.Start)
             {
-                return childTile.Coord;
+                return tileObj.Coord;
             }
         }
         return Vector2Int.zero;
@@ -142,6 +138,7 @@ public class Board : MonoBehaviour
     {
         int sight = obj.sight;
         if (sight == -1) { sight = (row > col ? row : col); }
+        if (sight == 0) { return; }
         Vector2Int coord = obj.Coord;
         Vector2Int nextCrd = new Vector2Int(coord.x - 1, coord.y);
         CheckMovableTile(obj, nextCrd, possibleTiles);
@@ -224,6 +221,7 @@ public class Board : MonoBehaviour
     {
         int sight = obj.sight;
         if (sight == -1) { sight = (row > col ? row : col); }
+        if (sight == 0) { return; }
         Vector2Int coord = obj.Coord;
         Vector2Int nextCrd = new Vector2Int(coord.x + 1, coord.y + 2);
         CheckMovableTile(obj, nextCrd, possibleTiles);
@@ -311,6 +309,7 @@ public class Board : MonoBehaviour
     {
         int sight = obj.sight;
         if (sight == -1) { sight = (row > col ? row : col); }
+        if (sight == 0) { return; }
         Vector2Int coord = obj.Coord;
         // 적이 있을 때만 대각선 이동 가능
         Vector2Int nextCrd = new Vector2Int(coord.x + 1, coord.y + 1);

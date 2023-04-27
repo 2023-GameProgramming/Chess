@@ -29,16 +29,3 @@ public class ColTile
     public static Color unmovable = Color.red;
     public static Color focus = Color.cyan;
 }
-
-
-public class GlobalFuction
-{
-    public static void SafeDestroy(GameObject obj)
-    {
-        obj.transform.SetParent(null);
-        obj.name = null;
-        obj.SetActive(false);
-        GameObject.Destroy(obj);
-    }
-
-}

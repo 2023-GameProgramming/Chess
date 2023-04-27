@@ -17,46 +17,71 @@ public class MoveInfo
 public class Enemies : MonoBehaviour
 {
     BoardObj tempObj;
+    Dictionary<Vector2Int, GameObject> objectDict;
 
     private void Start()
     {
+        objectDict = new Dictionary<Vector2Int, GameObject>();
         GameObject obj = new GameObject("temp");
         tempObj = obj.AddComponent<BoardObj>();
+        BoardObj[] boardObjs = GetComponentsInChildren<BoardObj>();
+        foreach (BoardObj boardObj in boardObjs)
+        {
+            objectDict[boardObj.Coord] = boardObj.gameObject;
+            boardObj.OnMoveCoord += UpdateDict;
+        }
+    }
+
+    public void KillEnemy(GameObject obj)
+    {
+        objectDict[obj.GetComponent<BoardObj>().Coord] = null;
+        obj.transform.SetParent(null);
+        obj.name = null;
+        obj.SetActive(false);
+        GameObject.Destroy(obj);
+    }
+
+
+    void UpdateDict(GameObject obj, Vector2Int oldcrd , Vector2Int newCrd)
+    {
+        if(objectDict[oldcrd].Equals(obj))
+        {
+            objectDict[oldcrd] = null;
+        }
+        objectDict[newCrd] = obj;
     }
 
     public void Decreaseturn()
     {
-        for (int i = 0; i < transform.childCount; i++)
+        BoardObj[] boardObjs = GetComponentsInChildren<BoardObj>();
+        foreach (BoardObj boardObj in boardObjs)
         {
-            GameObject childobj = transform.GetChild(i).gameObject;
-            childobj.GetComponent<BoardObj>().DecreaseTurn();
+            boardObj.DecreaseTurn();
         }
     }
 
 
-    public GameObject GetObj(Vector2 crd)
+    public GameObject GetObj(Vector2Int crd)
     {
-        for (int i = 0; i < transform.childCount; i++)
+        if (objectDict.TryGetValue(crd, out GameObject obj))
         {
-            GameObject childobj = transform.GetChild(i).gameObject;
-            // 자식 오브젝트에 대한 작업 수행
-            if (childobj.GetComponent<BoardObj>().Coord == crd)
-            {
-                return childobj;
-            }
+            return obj;
         }
-        return null;
+        else
+        {
+            return null;
+        }
     }
 
     public List<GameObject> GetMover()
     {
-        List<GameObject> moverlist = new List<GameObject>(); 
-        for (int i = 0; i < transform.childCount; i++)
+        List<GameObject> moverlist = new List<GameObject>();
+        BoardObj[] boardObjs = GetComponentsInChildren<BoardObj>();
+        foreach (BoardObj boardObj in boardObjs)
         {
-            GameObject childobj = transform.GetChild(i).gameObject;
-            if (childobj.GetComponent<BoardObj>().turn == 0)
+            if (boardObj.GetComponent<BoardObj>().turn == 0)
             {
-                moverlist.Add(childobj);
+                moverlist.Add(boardObj.gameObject);
             }
         }
         return moverlist;

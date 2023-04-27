@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
             {
                 HandleAttack();
             }
-            else
+            if (player.GetComponent<BoardObj>().IsMoving)
             {
                 GameObject Caturedenemy = enemies.GetObj(player.GetComponent<BoardObj>().Coord);
                 if (Caturedenemy != null && !PlayerAttacked)
