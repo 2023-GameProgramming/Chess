@@ -166,7 +166,7 @@ public class Player : MonoBehaviour
                 {
                     if(neartile == null||
                         (neartile != null && 
-                        (neartile.transform.position - transform.position).sqrMagnitude > (v.transform.position - transform.position).sqrMagnitude)) 
+                        (neartile.transform.position - transform.position).sqrMagnitude >= (v.transform.position - transform.position).sqrMagnitude)) 
                     {
                         nearangle = angle;
                         neartile = v;
