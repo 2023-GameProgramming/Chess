@@ -319,7 +319,7 @@ public class Board : MonoBehaviour
         Vector2Int left = new Vector2Int( dir.x==0 ? -1: dir.x, dir.y == 0 ? -1 : dir.y);
         Vector2Int right = new Vector2Int(dir.x == 0 ? 1 : dir.x, dir.y == 0 ? 1 : dir.y);
 
-        // ÀûÀÌ ÀÖÀ» ¶§¸¸ ´ë°¢¼± ÀÌµ¿ °¡´É
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ë°¢ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
         Vector2Int nextCrd = new Vector2Int(coord.x + left.x, coord.y + left.y);
         GameObject nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
         if(GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd) || 
@@ -335,6 +335,7 @@ public class Board : MonoBehaviour
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
         if (GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd) || 
             (nextCrdObj != null && IsPlayer(obj.gameObject)))
+
         {
             GameObject tile = GetTile(nextCrd);
             if (tile != null && IsTileMovable(nextCrd))
@@ -342,8 +343,7 @@ public class Board : MonoBehaviour
                 possibleTiles.Add(tile);
             }
         }
-
-        //ÀûÀÌ ¾øÀ» ¶§¸¸ Á÷Áø °¡´É
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         nextCrd = new Vector2Int(coord.x+ dir.x, coord.y + dir.y);
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
         if (nextCrdObj == null && !GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
