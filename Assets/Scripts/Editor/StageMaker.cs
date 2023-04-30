@@ -138,7 +138,6 @@ public class StageMaker : EditorWindow
                     {
                         Transform childTransform = enemies.transform.GetChild(i);
                         childTransform.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(childTransform.GetComponent<BoardObj>().Type);
-
                         Vector3 pos = GetTilePos(childTransform.parent.parent.gameObject, childTransform.GetComponent<BoardObj>().Coord);
                         pos.y += childTransform.GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2;
                         childTransform.transform.position = pos;
@@ -286,6 +285,22 @@ public class StageMaker : EditorWindow
 
     void SetBoardObjAttr(BoardObj enemy)
     {
+        Pawn pawn; 
+        enemy.TryGetComponent<Pawn>(out pawn);
+        if (pieceType == ePiece.pawn)
+        {
+            if (pawn == null)
+            {
+                enemy.gameObject.AddComponent<Pawn>();
+            }
+        }
+        else
+        {
+            if (pawn != null)
+            {
+                DestroyImmediate(pawn);
+            }
+        }
         enemy.delay = delay;
         enemy.sight = sight;
         enemy.Type = pieceType;

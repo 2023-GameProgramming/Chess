@@ -24,6 +24,7 @@ public class Enemies : MonoBehaviour
         objectDict = new Dictionary<Vector2Int, GameObject>();
         GameObject obj = new GameObject("temp");
         tempObj = obj.AddComponent<BoardObj>();
+        tempObj.gameObject.AddComponent<Pawn>();
         BoardObj[] boardObjs = GetComponentsInChildren<BoardObj>();
         foreach (BoardObj boardObj in boardObjs)
         {
@@ -94,6 +95,10 @@ public class Enemies : MonoBehaviour
         {
             tempObj.Coord = GameManager.Instance.player.GetComponent<BoardObj>().Coord;
             tempObj.Type = obj.GetComponent<BoardObj>().Type;
+            if(tempObj.Type == ePiece.pawn)
+            {
+                tempObj.GetComponent<Pawn>().dir = obj.GetComponent<Pawn>().dir;
+            }
             tempObj.sight = obj.GetComponent<BoardObj>().sight;
             List<GameObject> tiles = GameManager.Instance.board.FindMovableTiles(obj.GetComponent<BoardObj>());
             List<GameObject> tiles2 = GameManager.Instance.board.FindMovableTiles(tempObj);

@@ -305,31 +305,54 @@ public class Board : MonoBehaviour
 
 
     }
+
+
     void CheckPawn(BoardObj obj, List<GameObject> possibleTiles)
     {
         int sight = obj.sight;
         if (sight == -1) { sight = (row > col ? row : col); }
         if (sight == 0) { return; }
         Vector2Int coord = obj.Coord;
-        // 적이 있을 때만 대각선 이동 가능
-        Vector2Int nextCrd = new Vector2Int(coord.x + 1, coord.y + 1);
+        Pawn pawn;
+        obj.TryGetComponent<Pawn>(out pawn);
+        Vector2Int dir = pawn.dir;
+        Vector2Int left = new Vector2Int( dir.x==0 ? -1: dir.x, dir.y == 0 ? -1 : dir.y);
+        Vector2Int right = new Vector2Int(dir.x == 0 ? 1 : dir.x, dir.y == 0 ? 1 : dir.y);
+
+        // ���� ��� ���� �밢�� �̵� ����
+        Vector2Int nextCrd = new Vector2Int(coord.x + left.x, coord.y + left.y);
         GameObject nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
-        if (nextCrdObj != null || GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
+        if(GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd) || 
+            (nextCrdObj != null && IsPlayer(obj.gameObject)))
         {
-            CheckMovableTile(obj, nextCrd, possibleTiles);
+            GameObject tile = GetTile(nextCrd);
+            if (tile != null && IsTileMovable(nextCrd))
+            {
+                possibleTiles.Add(tile);
+            }
         }
-        nextCrd = new Vector2Int(coord.x - 1, coord.y + 1);
+        nextCrd = new Vector2Int(coord.x + right.x, coord.y + right.y);
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
-        if (nextCrdObj != null || GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
+        if (GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd) || 
+            (nextCrdObj != null && IsPlayer(obj.gameObject)))
+
         {
-            CheckMovableTile(obj, nextCrd, possibleTiles);
+            GameObject tile = GetTile(nextCrd);
+            if (tile != null && IsTileMovable(nextCrd))
+            {
+                possibleTiles.Add(tile);
+            }
         }
-        //적이 없을 때만 직진 가능
-        nextCrd = new Vector2Int(coord.x, coord.y + 1);
+        //���� ��� ���� ���� ����
+        nextCrd = new Vector2Int(coord.x+ dir.x, coord.y + dir.y);
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
-        if (nextCrdObj == null || !GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
+        if (nextCrdObj == null && !GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
         {
-            CheckMovableTile(obj, nextCrd, possibleTiles);
+            GameObject tile = GetTile(nextCrd);
+            if (tile != null && IsTileMovable(nextCrd))
+            {
+                possibleTiles.Add(tile);
+            }
         }
     }
 
