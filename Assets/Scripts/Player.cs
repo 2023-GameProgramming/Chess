@@ -166,7 +166,7 @@ public class Player : MonoBehaviour
                 {
                     if(neartile == null||
                         (neartile != null && 
-                        (neartile.transform.position - transform.position).sqrMagnitude >= (v.transform.position - transform.position).sqrMagnitude)) 
+                        (CalTileDistance(neartile)  >= CalTileDistance(v))))
                     {
                         nearangle = angle;
                         neartile = v;
@@ -230,6 +230,15 @@ public class Player : MonoBehaviour
         GetComponent<BoardObj>().Type = (ePiece)finedType;
         Debug.Log($" changed :  { (ePiece)finedType }");
         return true;
+    }
+    int CalTileDistance(GameObject obj)
+    {
+        Vector2Int compare = obj.GetComponent<Tile>().Coord;
+        Vector2Int origin = GetComponent<BoardObj>().Coord;
+        int x = Mathf.Abs(compare.x - origin.x);
+        int y = Mathf.Abs(compare.y - origin.y);
+        return (x > y ? x:y);       
+        
     }
     void AcquireHat(ePiece type)
     {
