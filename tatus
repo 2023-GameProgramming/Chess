@@ -1,0 +1,293 @@
+[33mcommit deb9aaba028058390be9064ee4dd1777fcda396e[m[33m ([m[1;36mHEAD -> [m[1;32mSeongpil[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/Seongpil[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Wed May 3 15:27:01 2023 +0900
+
+    Update Player.cs
+    
+    특정타일 선택 안되는 버그 수정
+
+[33mcommit f01d76b81209efbe5f5bcb1ce0d5dc4a3749d043[m
+Merge: 5cd5632 8a05179
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Sun Apr 30 13:49:21 2023 +0900
+
+    Merge pull request #13 from 2023-GameProgramming/Seongpil
+    
+    폰 버그 수정
+
+[33mcommit 8a051794886254285c3a7e9f544472aba0dbdc8d[m
+Merge: 4112480 5cd5632
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Sun Apr 30 13:49:12 2023 +0900
+
+    Merge branch 'master' into Seongpil
+
+[33mcommit 411248087705961911d033326a1d86e3ed5d8269[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Sun Apr 30 13:45:38 2023 +0900
+
+    폰 버그 수정
+
+[33mcommit 5cd563287a1d13aaaefeaa5cb3c525942150ae45[m
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Sat Apr 29 17:53:43 2023 +0900
+
+    Update README.md
+
+[33mcommit 401f04064fa822a1da645ffb89ae78194ced20c6[m
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Fri Apr 28 19:13:55 2023 +0900
+
+    Update Player.cs
+    
+    focus tile 버그 수정.
+
+[33mcommit 4fc491ded7ee3029b3fa28b89f7254d75b6217b1[m
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Thu Apr 27 21:03:27 2023 +0900
+
+    Update Board.cs
+
+[33mcommit 5c75a026360231afcb7b30f1dc346fba666372ee[m
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Thu Apr 27 21:00:57 2023 +0900
+
+    Update Board.cs
+    
+    pawn 수정.
+
+[33mcommit 0f837bd5cb9a20a14d351e644bd96372269c8916[m
+Merge: 684c246 3019dfb
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Thu Apr 27 11:47:56 2023 +0900
+
+    Merge pull request #12 from 2023-GameProgramming/Seongpil
+    
+    몇가지 버그 수정
+
+[33mcommit 3019dfb3bd0fa50f5a18ca49d4b0b35d34b70a20[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Thu Apr 27 11:46:26 2023 +0900
+
+    몇가지 버그 수정
+
+[33mcommit 684c2463d5ab68dde496263a5d970dbb64a0b3fb[m[33m ([m[1;31morigin/Ghaeul[m[33m)[m
+Merge: d26c460 7ba009f
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Wed Apr 26 11:46:15 2023 +0900
+
+    Merge pull request #11 from 2023-GameProgramming/Seongpil
+    
+    prototype
+
+[33mcommit 7ba009fd6c29e840edf06438211f72101e98d76c[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Wed Apr 26 11:39:23 2023 +0900
+
+    prototype
+
+[33mcommit d26c46036ddb5b841d4a5103107bf485eee5996f[m
+Merge: e4658bf d9297aa
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Fri Apr 14 19:37:01 2023 +0900
+
+    Merge pull request #9 from HongSeongPil/patch-1
+    
+    Update StageMaker.cs
+
+[33mcommit d9297aa67c161b988c79d49501a23ad8c039e735[m
+Author: 홍성필 <71554146+HongSeongPil@users.noreply.github.com>
+Date:   Fri Apr 14 19:36:08 2023 +0900
+
+    Update StageMaker.cs
+
+[33mcommit e4658bf73f19c73b98cdcc7a637f0ad447734db1[m
+Merge: b12b69d f5a3d4a
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Tue Apr 11 20:52:32 2023 +0900
+
+    Merge pull request #8 from 2023-GameProgramming/Seongpil
+    
+    Seongpil
+
+[33mcommit f5a3d4ab59b95e75d26bd65d6d8cbf0ef88f68d3[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Tue Apr 11 20:50:57 2023 +0900
+
+    player prefab 및 주석 추가
+
+[33mcommit 4d6ddadb8113eada7c9dd78204b642dadd1c5d76[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Tue Apr 11 10:41:12 2023 +0900
+
+     test2
+
+[33mcommit b12b69d5b07433a656995d5de802ad19d48038fc[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Tue Apr 11 10:38:51 2023 +0900
+
+    test
+
+[33mcommit 01d91f78a99fd83264fb057e732d6f39d4399cb4[m
+Merge: 673e02b fe767c6
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Tue Apr 11 10:27:16 2023 +0900
+
+    Merge pull request #7 from 2023-GameProgramming/Seongpil
+    
+    Enemies 추가
+
+[33mcommit 673e02bf3010ba9363a2fedb6eb1d580bba28e4e[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Tue Apr 11 10:23:45 2023 +0900
+
+    Enemies추가
+
+[33mcommit fe767c67b3a01931e5fcd40f72bcc2ce19bfd3c5[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Tue Apr 11 09:39:52 2023 +0900
+
+    Enemies 추가
+
+[33mcommit 6bbe69e29b9d8823a477833a8f08b096114eb614[m
+Merge: 5f284c3 30416ef
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Mon Apr 10 23:01:31 2023 +0900
+
+    Merge pull request #6 from 2023-GameProgramming/Seongpil
+    
+    핵심 클래스 함수 구조화
+
+[33mcommit 30416ef03f5e50b72d21561302a2b90f5c2ff358[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Mon Apr 10 23:00:16 2023 +0900
+
+    핵심 클래스 함수 구조화
+
+[33mcommit 5f284c37fc477e8078595a5d56691d174d86c3d8[m
+Merge: 67e9d3b 655cff6
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Sun Apr 9 22:40:09 2023 +0900
+
+    Merge pull request #5 from 2023-GameProgramming/Seongpil
+    
+    Seongpil
+
+[33mcommit 655cff61a32526eadfea78722ebcd067ffa11ba1[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Sun Apr 9 22:38:38 2023 +0900
+
+    StageMaker Redraw추가
+
+[33mcommit 633810f4b27beb3295c7dc21eaabc6f37c7d41e0[m
+Merge: ccc9560 67e9d3b
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Sun Apr 9 13:23:08 2023 +0900
+
+    Merge branch 'master' of https://github.com/2023-GameProgramming/Chess into Seongpil
+
+[33mcommit ccc9560fa8e455dd285a2a0cd7ffd031544b9183[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Sun Apr 9 13:21:13 2023 +0900
+
+    StageMaker 색 버그 수정
+
+[33mcommit 67e9d3b86148d23387cc9ab238a8b4fe9b44d1cc[m
+Merge: 6a4118a a0801bf
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Sun Apr 9 12:49:01 2023 +0900
+
+    Merge pull request #4 from 2023-GameProgramming/Seongpil
+    
+    StageMaker 리소스로드 버그 수정
+
+[33mcommit a0801bfc6a06fd86cab2daf360b3761017b2863f[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Sun Apr 9 12:44:52 2023 +0900
+
+    StageMaker 리소스로드 버그 수정
+
+[33mcommit 6a4118a6918ef756ac9d48cc8121170c62977fad[m
+Merge: c8498cf 0d23ccc
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Sat Apr 8 22:37:49 2023 +0900
+
+    Merge pull request #3 from 2023-GameProgramming/Seongpil
+    
+    관리자 권한입니다.
+
+[33mcommit 0d23ccca658ce07d6d672eb57312dd61e9dc7f4f[m
+Author: tjdvlf2880 <zx2880@naver.com>
+Date:   Sat Apr 8 22:31:51 2023 +0900
+
+    폴더구조 정리 및 StageMaker 구현
+
+[33mcommit 736d1ba69b0fa0abffa93c2fc34baedf2d1d9c5a[m
+Author: tjdvlf2880 <71554146+HongSeongPil@users.noreply.github.com>
+Date:   Thu Apr 6 00:09:18 2023 +0900
+
+    add Editor fuction Scripts
+
+[33mcommit c8498cf4ef2034a66924fede33e9b9a39e8718de[m
+Author: tjdvlf2880 <71554146+HongSeongPil@users.noreply.github.com>
+Date:   Wed Mar 22 21:47:14 2023 +0900
+
+    test 2
+
+[33mcommit c94f86bfc3e7f4a2652f7293b4ac40066d49f41f[m
+Merge: 027070e f9fa47c
+Author: HongSeongPil <50481968+tjdvlf2880@users.noreply.github.com>
+Date:   Wed Mar 22 21:36:22 2023 +0900
+
+    Merge pull request #2 from 2023-GameProgramming/SeongPil
+    
+    브랜치 생성
+
+[33mcommit f9fa47cae03d401a1d2f78f41e991db7a2eff643[m
+Author: tjdvlf2880 <71554146+HongSeongPil@users.noreply.github.com>
+Date:   Wed Mar 22 21:34:54 2023 +0900
+
+    브랜치 생성
+
+[33mcommit 027070e43e15d605bd2ac37b9c297530caa7ad3e[m
+Author: tjdvlf2880 <71554146+HongSeongPil@users.noreply.github.com>
+Date:   Wed Mar 22 21:19:25 2023 +0900
+
+    test
+
+[33mcommit 6207cde76698ab522c35d3d66c17902c87510354[m
+Merge: d5d00f3 557d025
+Author: 김가을 <cathykim41@gmail.com>
+Date:   Wed Mar 22 13:59:10 2023 +0900
+
+    Merge branch 'master' of https://github.com/2023-GameProgramming/Chess
+
+[33mcommit d5d00f3a868b96aee86b6d449ab9d866129425f0[m
+Author: 김가을 <cathykim41@gmail.com>
+Date:   Wed Mar 22 13:54:30 2023 +0900
+
+    안녕하세요
+
+[33mcommit 557d025b5e464cfaa58a1f9cd837fd12d74d89f4[m
+Author: koyeonju126 <94172518+koyeonju126@users.noreply.github.com>
+Date:   Wed Mar 22 13:51:20 2023 +0900
+
+    Delete .vscode directory
+
+[33mcommit 873637eb96e0da7068f19decaa0c37af38318db6[m
+Author: koyeonju126 <94172518+koyeonju126@users.noreply.github.com>
+Date:   Wed Mar 22 13:50:50 2023 +0900
+
+    Update .gitignore
+
+[33mcommit eeba1abe68aca964fa4c67a725d36435125ef7a8[m
+Author: koyeonju126 <koyj1206@hanyang.ac.kr>
+Date:   Wed Mar 22 13:45:22 2023 +0900
+
+    koyeonju scripts
+
+[33mcommit d39a53692e6ee19bbfbfea86b707f20a31f69598[m
+Author: tjdvlf2880 <71554146+HongSeongPil@users.noreply.github.com>
+Date:   Wed Mar 22 13:25:34 2023 +0900
+
+    project commit

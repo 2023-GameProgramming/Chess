@@ -141,6 +141,9 @@ public class GameManager : MonoBehaviour
             PlayerTurn = true;
             ProgressTurn = false;
             player.GetComponent<BoardObj>().ResetTurn();
+            player.ResetTileColor();
+            player.FindMovableTile();
+
         }
         else
         {
