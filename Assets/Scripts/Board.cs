@@ -123,7 +123,7 @@ public class Board : MonoBehaviour
                 if(nextCrdObj == null || (IsPlayer(obj.gameObject)))
                 {
                     possibleTiles.Add(tile);
-                    return true;
+                    return nextCrdObj == null;
                 }
             }
             else if (tile.GetComponent<Tile>().Type == eTileAttr.water && obj.GetComponent<BoardObj>().Type == ePiece.bishop)

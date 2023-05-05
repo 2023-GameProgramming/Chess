@@ -43,8 +43,6 @@ public class Player : MonoBehaviour
             if (dirMove)
             {
                 GetComponent<BoardObj>().DecreaseTurn();
-                SetTilesColor(MovableTile, ColTile.basic);
-                MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
                 dirMove = false;
             }
         }
@@ -57,8 +55,6 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftControl) && !Input.GetKey(KeyCode.LeftShift))
         {
             SwitchHat();
-            SetTilesColor(MovableTile, ColTile.basic);
-            MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
         }
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -67,13 +63,12 @@ public class Player : MonoBehaviour
         SetFocusTileColor();
         if (focusTile != null && Input.GetMouseButtonDown(0) && MovableTile.IndexOf(focusTile)>=0)
         {
-            if(GetComponent<BoardObj>().Type == ePiece.pawn || GetComponent<BoardObj>().Type == ePiece.king|| GetComponent<BoardObj>().Type == ePiece.knight ||
+            if (GetComponent<BoardObj>().Type == ePiece.pawn || GetComponent<BoardObj>().Type == ePiece.king|| GetComponent<BoardObj>().Type == ePiece.knight ||
                 !Input.GetKey(KeyCode.LeftShift))
             {
                 GetComponent<BoardObj>().DecreaseTurn();
-                SetTilesColor(MovableTile, ColTile.basic);
                 GetComponent<BoardObj>().MoveCoord(focusTile.GetComponent<Tile>().Coord);
-                MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
+
             }
             else
             {
@@ -88,18 +83,21 @@ public class Player : MonoBehaviour
                 }
                 SetTilesColor(MovableTile, ColTile.basic);
                 MovableTile = newMovableTile;
-                if(MovableTile.Count ==0)
+
+
+                if (MovableTile.Count ==0)
                 {
                     GetComponent<BoardObj>().DecreaseTurn();
                     dirMove = false;
                 }
-                dirMove = true;
+                else
+                {
+                    dirMove = true;
+                }
                 GetComponent<BoardObj>().MoveCoord(focusTile.GetComponent<Tile>().Coord);
                 if(GameManager.Instance.enemies.GetObj(focusTile.GetComponent<Tile>().Coord))
                 {
-                    SetTilesColor(MovableTile, ColTile.basic);
                     GetComponent<BoardObj>().DecreaseTurn();
-                    MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
                 }
             }
         }
@@ -118,9 +116,7 @@ public class Player : MonoBehaviour
     {
         LooseRandomHat();
         Isalive = SwitchHat();
-        SetTilesColor(MovableTile, ColTile.basic);
         GetComponent<BoardObj>().MoveCoord(destCrd);
-        MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
     }
 
     void SetFocusTileColor()
@@ -177,7 +173,13 @@ public class Player : MonoBehaviour
             focusTile?.GetComponent<Tile>().ChangeColor(ColTile.focus);
         }
     }
-
+    public void ResetTileColor()
+    {
+        foreach (var v in MovableTile)
+        {
+            v.GetComponent<Tile>().ChangeColor(ColTile.basic);
+        }
+    }
     void SetTilesColor(List<GameObject> list,Color col)
     {
         foreach (var v in list)
@@ -209,6 +211,7 @@ public class Player : MonoBehaviour
     }
     bool SwitchHat()
     {
+        ResetTileColor();
         int finedType = -1;
         for (int i = 0; i <= System.Enum.GetNames(typeof(ePiece)).Length; i++)
         {
@@ -228,9 +231,16 @@ public class Player : MonoBehaviour
             return false;
         }
         GetComponent<BoardObj>().Type = (ePiece)finedType;
+        FindMovableTile();
         Debug.Log($" changed :  { (ePiece)finedType }");
         return true;
     }
+
+    public void FindMovableTile()
+    {
+        MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());
+    }
+
     int CalTileDistance(GameObject obj)
     {
         Vector2Int compare = obj.GetComponent<Tile>().Coord;
