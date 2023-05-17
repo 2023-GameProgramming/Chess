@@ -32,10 +32,9 @@ public class Player : MonoBehaviour
     }
 
 
-
-
     private void Update()
     {
+
         SetTilesColor(MovableTile, ColTile.basic);
         if (MovableTile.Count == 0) { MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());}
 
@@ -161,8 +160,8 @@ public class Player : MonoBehaviour
                 float angle = rad * Mathf.Rad2Deg;
                 if (angle < 45 && nearangle > angle )
                 {
-                    if(neartile == null||
-                        (neartile != null && 
+                    if (neartile == null && GameManager.Instance.board.FindOneMovableTiles(this.GetComponent<BoardObj>()).Contains(v) ||
+                        (neartile != null&&
                         (CalTileDistance(neartile)  >= CalTileDistance(v))))
                     {
                         nearangle = angle;

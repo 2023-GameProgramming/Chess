@@ -19,16 +19,13 @@ public class Enemies : MonoBehaviour
     BoardObj tempObj;
     Dictionary<Vector2Int, GameObject> objectDict;
 
-    private void Start()
+    public void OnDestroy()
     {
-        Initialize();
+        if (tempObj != null)
+        {
+            Destroy(tempObj.gameObject);
+        }
     }
-
-    private void OnDestroy()
-    {
-        Destroy(tempObj);
-    }
-
     public void Initialize()
     {
         objectDict = new Dictionary<Vector2Int, GameObject>();
