@@ -58,18 +58,20 @@ public class BoardObj :MonoBehaviour
     public Vector2 SetCoord(Vector2Int crd)
     {
         Coord = crd;
-        Vector3 tilepos = GameManager.Instance.board.GetTile(crd).transform.position;
-        // Mesh의 bounds를 이용하여 quad 오브젝트의 길이를 구한다.
-        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        // 타일 오브젝트의 위치 설정
         float height = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
-        transform.position = tilepos +  new Vector3(0,height / 2,0);
+        transform.position = endPoint = GameManager.Instance.board.GetTile(crd).transform.position + new Vector3(0, height / 2, 0);
         return crd;
     }
 
     public Vector2 MoveCoord(Vector2Int crd) 
     {
-        OnMoveCoord?.Invoke(gameObject,Coord, crd);
+        Player playerComponent;
+        TryGetComponent<Player>(out playerComponent);
+        if (playerComponent == null)
+
+        {
+            GameManager.Instance.enemies.UpdateDict(gameObject, Coord, crd);
+        }
         Coord = crd;
         IsMoving = true;
         startPoint = transform.position;
