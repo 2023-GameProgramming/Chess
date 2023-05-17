@@ -77,31 +77,37 @@ public class GameManager : MonoBehaviour
     {
         if (player.GetComponent<BoardObj>().turn == 0)
         {
-            PlayerTurn = false;
-            if (!player.GetComponent<BoardObj>().IsMoving)
+            if (board.GetTile(player.GetComponent<BoardObj>().Coord).GetComponent<Tile>().Type == eTileAttr.goal)
             {
-                HandleAttack();
-            }
-            if (CheckCapturedEnemy)
-            {
-                Caturedenemy = enemies.GetObj(player.GetComponent<BoardObj>().Coord);
-                if (Caturedenemy != null && !PlayerAttacked)
+                if (!player.GetComponent<BoardObj>().IsMoving)
                 {
-                    Caturedenemy.GetComponent<BoardObj>().ResetTurn();
-                    EnemyAttacked = true;
+                    Clear();
                 }
-                CheckCapturedEnemy = false;
             }
-            HandleProgress();
-        }
-        if (!player.Isalive)
-        {
-            Debug.Log("���");
-        }
+            else
 
-        if (board.GetTile(player.GetComponent<BoardObj>().Coord).GetComponent<Tile>().Type == eTileAttr.goal)
-        {
-            Clear();
+            {
+                PlayerTurn = false;
+                if (!player.GetComponent<BoardObj>().IsMoving)
+                {
+                    HandleAttack();
+                }
+                if (CheckCapturedEnemy)
+                {
+                    Caturedenemy = enemies.GetObj(player.GetComponent<BoardObj>().Coord);
+                    if (Caturedenemy != null && !PlayerAttacked)
+                    {
+                        Caturedenemy.GetComponent<BoardObj>().ResetTurn();
+                        EnemyAttacked = true;
+                    }
+                    CheckCapturedEnemy = false;
+                }
+                HandleProgress();
+            }
+            if (!player.Isalive)
+            {
+                Debug.Log("���");
+            }
         }
     }
 
@@ -133,7 +139,6 @@ public class GameManager : MonoBehaviour
                 List<GameObject> movabletile = board.FindMovableTiles(v.GetComponent<BoardObj>());
                 if (movabletile.Count != 0)
                 {
-                    // �� �� �ΰ������� �߰��� �� �ְ����� �����ϰ� ����.
                     v.GetComponent<BoardObj>().MoveCoord(movabletile[Random.Range(0, movabletile.Count)].GetComponent<Tile>().Coord);
                 }
                 v.GetComponent<BoardObj>().ResetTurn();
@@ -202,7 +207,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            //���� ������
+            //종료화면
         }
     }
 
@@ -210,7 +215,11 @@ public class GameManager : MonoBehaviour
     {
         ResetCondition();
         CurrentStageIndex++;
-        GameObject.Destroy(CurrentStage);
+        if (CurrentStage != null)
+        {
+            GameObject.Destroy(CurrentStage);
+        }
+
         CurrentStage = GameObject.Instantiate(Resources.Load<GameObject>("Stage/Stage"+ CurrentStageIndex.ToString()));
         enemies = CurrentStage.transform.Find("Enemies").GetComponent<Enemies>();
         enemies.Initialize();

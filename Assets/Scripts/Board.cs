@@ -15,12 +15,7 @@ public class Board : MonoBehaviour
 
     Vector2Int Start;
     Vector2Int End;
-    
-
-    private void Awake()
-    {
-        Initialize();
-    }
+   
 
     public void Initialize()
     {
@@ -51,6 +46,8 @@ public class Board : MonoBehaviour
         
         return Start;
     }
+
+
 
     public List<GameObject> FindMovableTiles(BoardObj obj)
     {
@@ -321,6 +318,15 @@ public class Board : MonoBehaviour
 
     }
 
+    public List<GameObject> FindOneMovableTiles(BoardObj obj)
+    {
+        int sight = obj.sight;
+        obj.sight = 1;
+        List<GameObject> list =  FindMovableTiles(obj);
+        obj.sight = sight;
+        return list;
+    }
+
 
     void CheckPawn(BoardObj obj, List<GameObject> possibleTiles)
     {
@@ -334,7 +340,6 @@ public class Board : MonoBehaviour
         Vector2Int left = new Vector2Int( dir.x==0 ? -1: dir.x, dir.y == 0 ? -1 : dir.y);
         Vector2Int right = new Vector2Int(dir.x == 0 ? 1 : dir.x, dir.y == 0 ? 1 : dir.y);
 
-        // ���� ��� ���� �밢�� �̵� ����
         Vector2Int nextCrd = new Vector2Int(coord.x + left.x, coord.y + left.y);
         GameObject nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
         if(GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd) || 
@@ -358,7 +363,6 @@ public class Board : MonoBehaviour
                 possibleTiles.Add(tile);
             }
         }
-        //���� ��� ���� ���� ����
         nextCrd = new Vector2Int(coord.x+ dir.x, coord.y + dir.y);
         nextCrdObj = GameManager.Instance.enemies.GetObj(nextCrd);
         if (nextCrdObj == null && !GameManager.Instance.player.GetComponent<BoardObj>().Coord.Equals(nextCrd))
