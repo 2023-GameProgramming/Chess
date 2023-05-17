@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance = null;
     #endregion
 
-    public int MaxStageNum = 1;
+    public int MaxStageNum = 5;
     private int CurrentStageIndex;
 
     [HideInInspector]
@@ -33,6 +33,11 @@ public class GameManager : MonoBehaviour
     MoveInfo Attacker;
 
     bool EnemyAttacked;
+
+
+    bool CheckCapturedEnemy;
+    GameObject Caturedenemy;
+    GameObject CurrentStage;
     #region MonoBehavior
     private void Awake()
     {
@@ -49,17 +54,24 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        Attacker = new MoveInfo();
         CurrentStageIndex = -1;
-        PlayerTurn = true;
-        ProgressTurn = false;
-        GameObject playerPrefab = Resources.Load<GameObject>("Basic/Player");
-        player = GameObject.Instantiate(playerPrefab).GetComponent<Player>();
-        player.transform.position = Vector3.zero;
-        UpdateStage();
+        player = GameObject.Instantiate(Resources.Load<GameObject>("Basic/Player")).GetComponent<Player>();
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
         Cursor.SetCursor(null, screenCenter, CursorMode.Auto);
         Cursor.lockState = CursorLockMode.Locked;
+        UpdateStage();
+    }
+
+    void ResetCondition()
+    {
+        Attacker = new MoveInfo();
+        PlayerTurn = true;
+        ProgressTurn = false;
+        CheckCapturedEnemy = false;
+        PlayerAttacked = false;
+        EnemyAttacked = false;
+        MovingObjNum = 0;
+        Caturedenemy = null;
     }
     void Update()
     {
@@ -70,21 +82,21 @@ public class GameManager : MonoBehaviour
             {
                 HandleAttack();
             }
-            if (player.GetComponent<BoardObj>().IsMoving)
+            if (CheckCapturedEnemy)
             {
-                GameObject Caturedenemy = enemies.GetObj(player.GetComponent<BoardObj>().Coord);
+                Caturedenemy = enemies.GetObj(player.GetComponent<BoardObj>().Coord);
                 if (Caturedenemy != null && !PlayerAttacked)
                 {
                     Caturedenemy.GetComponent<BoardObj>().ResetTurn();
                     EnemyAttacked = true;
                 }
-
+                CheckCapturedEnemy = false;
             }
             HandleProgress();
         }
         if (!player.Isalive)
         {
-            Debug.Log("Áê±Ý");
+            Debug.Log("ï¿½ï¿½ï¿½");
         }
 
         if (board.GetTile(player.GetComponent<BoardObj>().Coord).GetComponent<Tile>().Type == eTileAttr.goal)
@@ -121,7 +133,7 @@ public class GameManager : MonoBehaviour
                 List<GameObject> movabletile = board.FindMovableTiles(v.GetComponent<BoardObj>());
                 if (movabletile.Count != 0)
                 {
-                    // Á» ´õ ÀÎ°øÁö´ÉÀ» Ãß°¡ÇÒ ¼ö ÀÖ°ÚÁö¸¸ ·£´ýÇÏ°Ô ¼³Á¤.
+                    // ï¿½ï¿½ ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½.
                     v.GetComponent<BoardObj>().MoveCoord(movabletile[Random.Range(0, movabletile.Count)].GetComponent<Tile>().Coord);
                 }
                 v.GetComponent<BoardObj>().ResetTurn();
@@ -135,6 +147,7 @@ public class GameManager : MonoBehaviour
         {
             ProgressTurn = true;
             enemies.Decreaseturn();
+            CheckCapturedEnemy = true;
         }
         else if (enemies.GetMover().Count == 0 && MovingObjNum == 0)
         {
@@ -145,7 +158,7 @@ public class GameManager : MonoBehaviour
             player.FindMovableTile();
 
         }
-        else
+        else if(!PlayerAttacked)
         {
             HandleEnemyBehave();
         }
@@ -154,7 +167,6 @@ public class GameManager : MonoBehaviour
     {
         if (EnemyAttacked)
         {
-            GameObject Caturedenemy = enemies.GetObj(player.GetComponent<BoardObj>().Coord);
             player.CaptureEnemy(Caturedenemy);
             EnemyAttacked = false;
         }
@@ -162,22 +174,22 @@ public class GameManager : MonoBehaviour
         {
             Vector2Int dir = board.GetCrdDir(Attacker.coord, player.GetComponent<BoardObj>().Coord);
             Vector2Int nextCrd = Vector2Int.zero;
-            int i = 2;
-            for (; i >= 0; i--)
+            int i = 0;
+            for (; i <=2; i++)
             {
-                nextCrd = i * dir + player.GetComponent<BoardObj>().Coord;
-                if (GameManager.Instance.board.IsPossible(nextCrd))
+                nextCrd = (i) * dir + player.GetComponent<BoardObj>().Coord;
+                if (!GameManager.Instance.board.IsPossible( dir + nextCrd))
                 {
                     break;
                 }
             }
             player.OnAttacked(nextCrd);
-            if (i != 2)
+            if (i != 1)
             {
-                // ÇÃ·¹ÀÌ¾î°¡ µÎÄ­ ¹Ð·Á³ªÁö ¾ÊÀ¸¸é attacker´Â Á¦ÀÚ¸®·Î.
                 Attacker.obj.GetComponent<BoardObj>().MoveCoord(Attacker.coord);
             }
             PlayerAttacked = false;
+            CheckCapturedEnemy = true;
         }
     }
 
@@ -190,20 +202,26 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            //¿£µù º¸¿©ÁÜ
+            //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         }
     }
 
     void UpdateStage()
     {
+        ResetCondition();
         CurrentStageIndex++;
-        GameObject CurrentStage = GameObject.Find("Stage" + CurrentStageIndex.ToString());
+        GameObject.Destroy(CurrentStage);
+        CurrentStage = GameObject.Instantiate(Resources.Load<GameObject>("Stage/Stage"+ CurrentStageIndex.ToString()));
         enemies = CurrentStage.transform.Find("Enemies").GetComponent<Enemies>();
+        enemies.Initialize();
         board = CurrentStage.transform.Find("Tiles").GetComponent<Board>();
+        board.Initialize();
         player.GetComponent<BoardObj>().turn = player.GetComponent<BoardObj>().delay;
         player.GetComponent<BoardObj>().SetCoord(board.GetStartCoord());
+        player.MovableTile.Clear();
         CameraController cameracontroller = Camera.main.GetComponent<CameraController>();
         cameracontroller.target = player.transform;
+
     }
     #endregion
 }

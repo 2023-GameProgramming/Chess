@@ -13,8 +13,16 @@ public class Board : MonoBehaviour
     [HideInInspector]
     GameObject[,] TileList;
 
+    Vector2Int Start;
+    Vector2Int End;
+    
 
     private void Awake()
+    {
+        Initialize();
+    }
+
+    public void Initialize()
     {
         TileList = new GameObject[row, col];
         Tile[] tileObjs = GetComponentsInChildren<Tile>();
@@ -22,19 +30,26 @@ public class Board : MonoBehaviour
         {
             Vector2Int crd = tileObj.Coord;
             TileList[crd.y, crd.x] = tileObj.gameObject;
+            if (tileObj.Type == eTileAttr.Start)
+            {
+                Start = tileObj.Coord;
+            }
+            if (tileObj.Type == eTileAttr.goal)
+            {
+                End = tileObj.Coord;
+            }
         }
+    }
+
+    public Vector2Int GetGoalCoord()
+    {
+        
+        return End;
     }
     public Vector2Int GetStartCoord()
     {
-        Tile[] tileObjs = GetComponentsInChildren<Tile>();
-        foreach (Tile tileObj in tileObjs)
-        {
-            if (tileObj.Type == eTileAttr.Start)
-            {
-                return tileObj.Coord;
-            }
-        }
-        return Vector2Int.zero;
+        
+        return Start;
     }
 
     public List<GameObject> FindMovableTiles(BoardObj obj)

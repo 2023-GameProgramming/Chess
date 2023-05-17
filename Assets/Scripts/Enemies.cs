@@ -21,6 +21,16 @@ public class Enemies : MonoBehaviour
 
     private void Start()
     {
+        Initialize();
+    }
+
+    private void OnDestroy()
+    {
+        Destroy(tempObj);
+    }
+
+    public void Initialize()
+    {
         objectDict = new Dictionary<Vector2Int, GameObject>();
         GameObject obj = new GameObject("temp");
         tempObj = obj.AddComponent<BoardObj>();
@@ -33,9 +43,17 @@ public class Enemies : MonoBehaviour
         }
     }
 
+
+
+
+
+
     public void KillEnemy(GameObject obj)
     {
-        objectDict[obj.GetComponent<BoardObj>().Coord] = null;
+        if (objectDict[obj.GetComponent<BoardObj>().Coord].Equals(obj))
+        {
+            objectDict[obj.GetComponent<BoardObj>().Coord] = null;
+        }
         obj.transform.SetParent(null);
         obj.name = null;
         obj.SetActive(false);
@@ -43,7 +61,7 @@ public class Enemies : MonoBehaviour
     }
 
 
-    void UpdateDict(GameObject obj, Vector2Int oldcrd , Vector2Int newCrd)
+    public void UpdateDict(GameObject obj, Vector2Int oldcrd , Vector2Int newCrd)
     {
         if(objectDict[oldcrd].Equals(obj))
         {

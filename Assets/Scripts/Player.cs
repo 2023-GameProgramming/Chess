@@ -9,9 +9,7 @@ public class Player : MonoBehaviour
 
     Dictionary<ePiece, int> hat;
     int hatIndex;
-    List<GameObject> MovableTile;
-    List<GameObject> Temp2MovableTile;
-    List<GameObject> CurrentDrawTile;
+    public List<GameObject> MovableTile;
 
     GameObject focusTile;
 
@@ -32,6 +30,9 @@ public class Player : MonoBehaviour
         hat.Add(ePiece.queen, 1);
         hat.Add(ePiece.king, 1);
     }
+
+
+
 
     private void Update()
     {
