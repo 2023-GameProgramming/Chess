@@ -34,11 +34,7 @@ public class BoardObj :MonoBehaviour
     {
         turn = delay;
         IsMoving = false;
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        if(spriteRenderer !=null)
-        {
-            spriteRenderer.sprite = Resource.Instance.GetPieceSprite(Type);
-        }
+        GameObject.Instantiate(Resource.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
     }
     #endregion MonoBehavior
 
@@ -58,8 +54,7 @@ public class BoardObj :MonoBehaviour
     public Vector2 SetCoord(Vector2Int crd)
     {
         Coord = crd;
-        float height = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
-        transform.position = endPoint = GameManager.Instance.board.GetTile(crd).transform.position + new Vector3(0, height / 2, 0);
+        transform.position = endPoint = GameManager.Instance.board.GetTile(crd).transform.position;
         return crd;
     }
 
@@ -75,8 +70,7 @@ public class BoardObj :MonoBehaviour
         Coord = crd;
         IsMoving = true;
         startPoint = transform.position;
-        float height = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
-        endPoint = GameManager.Instance.board.GetTile(crd).transform.position + new Vector3(0, height / 2, 0);
+        endPoint = GameManager.Instance.board.GetTile(crd).transform.position;
         StartCoroutine(ChangeTransfrom());
         return crd;
     }

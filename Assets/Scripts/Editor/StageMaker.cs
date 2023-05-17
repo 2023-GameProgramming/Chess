@@ -97,7 +97,7 @@ public class StageMaker : EditorWindow
             if (Selection.activeGameObject != null)
             {
                 BoardObj boardobj;
-                if (Selection.activeGameObject.TryGetComponent<BoardObj>(out boardobj))
+                if (Selection.activeGameObject.TryGetComponent<BoardObj>(out boardobj) || (Selection.activeGameObject.transform.parent != null && Selection.activeGameObject.transform.parent.TryGetComponent<BoardObj>(out boardobj)) )
                 {
                     SetBoardObjAttr(boardobj);
                 }
@@ -128,19 +128,6 @@ public class StageMaker : EditorWindow
                     {
                         Transform childTransform = tiles.transform.GetChild(i);
                         SetColor(childTransform.GetComponent<Tile>());
-                    }
-                }
-
-                GameObject enemies = s.transform.Find("Enemies").gameObject;
-                if (enemies != null)
-                {
-                    for (int i = 0; i < enemies.transform.childCount; i++)
-                    {
-                        Transform childTransform = enemies.transform.GetChild(i);
-                        childTransform.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(childTransform.GetComponent<BoardObj>().Type);
-                        Vector3 pos = GetTilePos(childTransform.parent.parent.gameObject, childTransform.GetComponent<BoardObj>().Coord);
-                        pos.y += childTransform.GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2;
-                        childTransform.transform.position = pos;
                     }
                 }
             }
@@ -192,7 +179,7 @@ public class StageMaker : EditorWindow
                 {
                     GameObject enemyPrefab = Resources.Load<GameObject>("Basic/Enemy");
                     GameObject enemyobj = PrefabUtility.InstantiatePrefab(enemyPrefab) as GameObject;
-                    enemyobj.transform.position = new Vector3(tile.transform.position.x, enemyobj.GetComponent<SpriteRenderer>().sprite.bounds.size.y/2 + tile.transform.position.y, tile.transform.position.z);
+                    enemyobj.transform.position = new Vector3(tile.transform.position.x,  tile.transform.position.y, tile.transform.position.z);
                     BoardObj enemy = enemyobj.GetComponent<BoardObj>();
                     GameObject stage = tile.transform.parent.parent.gameObject;
                     enemy.Coord = tile.Coord;
@@ -305,9 +292,18 @@ public class StageMaker : EditorWindow
         enemy.sight = sight;
         enemy.Type = pieceType;
         enemy.movetime = movetime;
-        enemy.GetComponent<SpriteRenderer>().sprite = Resource.Instance.GetPieceSprite(pieceType);
+
+        if(enemy.transform.childCount != 0)
+        {
+            GameObject.DestroyImmediate(enemy.transform.GetChild(0).gameObject);
+        }
+
+        GameObject obj = GameObject.Instantiate(Resource.Instance.GetPiecePrefab(pieceType));
+
+        Selection.activeGameObject = obj;
+        obj.transform.SetParent(enemy.transform, false);
+        obj.hideFlags = HideFlags.NotEditable;
         Vector3 pos = GetTilePos(enemy.transform.parent.parent.gameObject, enemy.Coord);
-        pos.y += enemy.GetComponent<SpriteRenderer>().sprite.bounds.size.y / 2;
         enemy.transform.position = pos;
         EditorUtility.SetDirty(enemy);
     }

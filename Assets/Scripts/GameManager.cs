@@ -1,8 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
+using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,6 +37,13 @@ public class GameManager : MonoBehaviour
     bool CheckCapturedEnemy;
     GameObject Caturedenemy;
     GameObject CurrentStage;
+
+    [HideInInspector]
+    public AudioMixerGroup mixerGroup;
+
+
+    AudioSource bgm;
+
     #region MonoBehavior
     private void Awake()
     {
@@ -54,6 +60,12 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        mixerGroup = Resources.Load<AudioMixerGroup>("Mixer");
+        bgm = gameObject.AddComponent<AudioSource>();
+
+        bgm.clip = Resource.Instance.SoundList["Bgm.mp3"];
+        bgm.Play();
+
         CurrentStageIndex = -1;
         player = GameObject.Instantiate(Resources.Load<GameObject>("Basic/Player")).GetComponent<Player>();
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);

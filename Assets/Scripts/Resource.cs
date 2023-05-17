@@ -1,13 +1,15 @@
 
 
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Resource 
+public class Resource
 {
-    public Dictionary<string, Sprite> sprite;
-
+    public Dictionary<string, GameObject> Chessprefab;
+    public Dictionary<string, AudioClip> SoundList;
     struct FileInfo
     {
         public string path;
@@ -20,22 +22,21 @@ public class Resource
         }
     }
 
-    FileInfo[] AssetPngfiles =
+    FileInfo[] AssetChessfiles =
     {
-        new FileInfo("Piece", "B_Pawn"),
-        new FileInfo("Piece", "B_Knight"),
-        new FileInfo("Piece", "B_Rook"),
-        new FileInfo("Piece", "B_Bishop"),
-        new FileInfo("Piece", "B_Queen"),
-        new FileInfo("Piece", "B_King"),
-        new FileInfo("Piece", "W_Pawn"),
-        new FileInfo("Piece", "W_Knight"),
-        new FileInfo("Piece", "W_Rook"),
-        new FileInfo("Piece", "W_Bishop"),
-        new FileInfo("Piece", "W_Queen"),
-        new FileInfo("Piece", "W_King"),
+        new FileInfo("Model", "BishopDark"),
+        new FileInfo("Model", "KingDark"),
+        new FileInfo("Model", "QueenDark"),
+        new FileInfo("Model", "PawnDark"),
+        new FileInfo("Model", "PawnLight"),
+        new FileInfo("Model", "KngihtDark"),
+        new FileInfo("Model", "RookDark"),
     };
 
+    FileInfo[] Soundfiles =
+    {
+        new FileInfo("Sound", "Bgm.mp3"),
+    };
 
     private static Resource _instance;
     public static Resource Instance
@@ -51,39 +52,59 @@ public class Resource
     }
     public void Initialize()
     {
-        sprite = new Dictionary<string, Sprite>();
-        foreach (var info in AssetPngfiles)
+        SoundList = new Dictionary<string, AudioClip>();
+        LoadSound();
+        Chessprefab = new Dictionary<string, GameObject>();
+        foreach (var info in AssetChessfiles)
         {
-            Texture2D texture = new Texture2D(1, 1);
-            texture.LoadImage(File.ReadAllBytes(Path.Combine(Application.streamingAssetsPath, info.path, info.name+".png")));
-            sprite[info.name] = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f,0.5f));
-
-            if(sprite[info.name] == null)
-            {
-                Debug.Log("ErrorLoadResource : " +info.path + info.name);
-            }
+            GameObject prefabObj = Resources.Load<GameObject>(Path.Combine(info.path, info.name));
+            Chessprefab[info.name] = prefabObj;
         }
         Debug.Log("Resource.InitializeDone");
     }
 
-    public Sprite GetPieceSprite(ePiece type)
+    public void LoadSound()
+    {
+        foreach (var info in Soundfiles)
+        {
+            string audioClipURL = Path.Combine(Application.streamingAssetsPath, Path.Combine(info.path, info.name));
+
+            WWW www = new WWW(audioClipURL);
+            while (!www.isDone)
+            {
+                Debug.Log("사운드 불러오는 중...");
+            }
+            if (string.IsNullOrEmpty(www.error))
+            {
+                Debug.Log("사운드 불러오기 성공!");
+                AudioClip audioClip = www.GetAudioClip();
+                SoundList[info.name] = audioClip;
+            }
+            else
+            {
+                Debug.Log("Failed to load sound: " + www.error);
+            }
+        }
+    }
+
+    public GameObject GetPiecePrefab(ePiece type)
     {
         switch (type)
         {
             case ePiece.pawn:
-                return sprite["B_Pawn"];
+                return Chessprefab["PawnDark"];
             case ePiece.rook:
-                return sprite["B_Rook"];
+                return Chessprefab["RookDark"];
             case ePiece.bishop:
-                return sprite["B_Bishop"];
+                return Chessprefab["BishopDark"];
             case ePiece.knight:
-                return sprite["B_Knight"];  
+                return Chessprefab["KngihtDark"];  
             case ePiece.queen:
-                return sprite["B_Queen"];
+                return Chessprefab["QueenDark"];
             case ePiece.king:
-                return sprite["B_King"];
+                return Chessprefab["KingDark"];
             default:
-                return sprite["B_Pawn"];
+                return Chessprefab["PawnDark"];
         }
     }
 }

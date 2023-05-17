@@ -8467,7 +8467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Coord: {x: 0, y: 1}
-  Type: 0
+  Type: 3
 --- !u!120 &6721562599637388375
 LineRenderer:
   m_ObjectHideFlags: 0
