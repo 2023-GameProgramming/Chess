@@ -127,6 +127,7 @@ public class Player : MonoBehaviour
             focusTile = null;
         }
         Vector3 mousePosition = Input.mousePosition;
+        mousePosition += new Vector3(0, mousePosition.y/3, 0);
        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         int layerMask = LayerMask.GetMask("Tile");
         if (Input.GetKey(KeyCode.LeftShift) && Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, layerMask))
