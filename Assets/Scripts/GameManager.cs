@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -40,9 +41,10 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector]
     public AudioMixerGroup mixerGroup;
+    float progressbar;
+    //AudioSource bgm;
 
-
-    AudioSource bgm;
+    bool Startbattle;
 
     #region MonoBehavior
     private void Awake()
@@ -50,7 +52,7 @@ public class GameManager : MonoBehaviour
         if (null == Instance)
         {
             Instance = this;
-            Resource.Instance.Initialize();
+            DontDestroyOnLoad(this);
         }
         else
         {
@@ -61,18 +63,40 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         mixerGroup = Resources.Load<AudioMixerGroup>("Mixer");
-        bgm = gameObject.AddComponent<AudioSource>();
+        SceneManager.sceneLoaded += OnSceneLoaded;
+        Startbattle = false;
+    }
 
-        bgm.clip = Resource.Instance.SoundList["Bgm.mp3"];
-        bgm.Play();
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (SceneManager.GetActiveScene().name == "Battle")
+        {
+            StartStage();
+        }
+    }
+    void Update()
+    {
+        if (Startbattle)
+        {
+            UpdateGameLogic();
+        }
+    }
 
-        CurrentStageIndex = -1;
+
+    void StartStage()
+    {
+        Startbattle = true;
+           //bgm = gameObject.AddComponent<AudioSource>();
+           //bgm.clip = ResourceManager.Instance.SoundList["Bgm.mp3"];
+           //bgm.Play();
+           CurrentStageIndex = -1;
         player = GameObject.Instantiate(Resources.Load<GameObject>("Basic/Player")).GetComponent<Player>();
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
         Cursor.SetCursor(null, screenCenter, CursorMode.Auto);
         Cursor.lockState = CursorLockMode.Locked;
         UpdateStage();
     }
+
 
     void ResetCondition()
     {
@@ -85,7 +109,9 @@ public class GameManager : MonoBehaviour
         MovingObjNum = 0;
         Caturedenemy = null;
     }
-    void Update()
+
+
+    void UpdateGameLogic()
     {
         if (player.GetComponent<BoardObj>().turn == 0)
         {
@@ -103,6 +129,10 @@ public class GameManager : MonoBehaviour
                 if (!player.GetComponent<BoardObj>().IsMoving)
                 {
                     HandleAttack();
+                    if (!player.Isalive)
+                    {
+                        Debug.Log("죽음");
+                    }
                 }
                 if (CheckCapturedEnemy)
                 {
@@ -116,12 +146,9 @@ public class GameManager : MonoBehaviour
                 }
                 HandleProgress();
             }
-            if (!player.Isalive)
-            {
-                Debug.Log("���");
-            }
         }
     }
+
 
 
     void HandleEnemyBehave()
@@ -231,7 +258,6 @@ public class GameManager : MonoBehaviour
         {
             GameObject.Destroy(CurrentStage);
         }
-
         CurrentStage = GameObject.Instantiate(Resources.Load<GameObject>("Stage/Stage"+ CurrentStageIndex.ToString()));
         enemies = CurrentStage.transform.Find("Enemies").GetComponent<Enemies>();
         enemies.Initialize();

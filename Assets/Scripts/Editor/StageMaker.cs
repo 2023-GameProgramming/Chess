@@ -15,10 +15,17 @@ public class StageMaker : EditorWindow
     private bool active2;
     GUIStyle style1;
     GUIStyle style2;
+
     private void OnEnable()
     {
         EditorPrefs.DeleteAll();
-        Resource.Instance.Initialize();
+        if(ResourceManager.Instance == null)
+        {
+            GameObject obj = new GameObject();
+            obj.name = "Resource";
+            ResourceManager.Instance = obj.AddComponent<ResourceManager>();
+        }
+        ResourceManager.Instance.LoadPrefab((progress) =>{});
         active1 = false;
         active2 = false;
         SceneView.duringSceneGui += OnSceneGUI;
@@ -27,6 +34,10 @@ public class StageMaker : EditorWindow
     private void OnDisable()
     {
         SceneView.duringSceneGui -= OnSceneGUI;
+        if (ResourceManager.Instance != null)
+        {
+            DestroyImmediate(ResourceManager.Instance.gameObject);
+        }
     }
 
 
@@ -117,7 +128,6 @@ public class StageMaker : EditorWindow
 
         if (GUILayout.Button("ReDraw"))
         {
-            Resource.Instance.Initialize();
             GameObject[] stage = GameObject.FindGameObjectsWithTag("Stage");
             foreach (var s in stage)
             {
@@ -298,7 +308,7 @@ public class StageMaker : EditorWindow
             GameObject.DestroyImmediate(enemy.transform.GetChild(0).gameObject);
         }
 
-        GameObject obj = GameObject.Instantiate(Resource.Instance.GetPiecePrefab(pieceType));
+        GameObject obj = GameObject.Instantiate(ResourceManager.Instance.GetPiecePrefab(pieceType));
 
         Selection.activeGameObject = obj;
         obj.transform.SetParent(enemy.transform, false);

@@ -34,7 +34,7 @@ public class BoardObj :MonoBehaviour
     {
         turn = delay;
         IsMoving = false;
-        GameObject.Instantiate(Resource.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
+        GameObject.Instantiate(ResourceManager.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
     }
     #endregion MonoBehavior
 
