@@ -1,40 +1,44 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
 
-    public bool Isalive;
 
+    public GameObject HatUI;
+
+    public bool Isalive;
     Dictionary<ePiece, int> hat;
     int hatIndex;
     public List<GameObject> MovableTile;
-
     GameObject focusTile;
-
     bool dirMove;
+
+
+
+
 
     private void Start()
     {
+        HatUI = GameObject.FindGameObjectWithTag("HatUI");
         dirMove = false;
         Isalive = true;
         MovableTile = new List<GameObject>();
         hatIndex = ((int)ePiece.king);
         GetComponent<BoardObj>().Type = ePiece.king;
         hat = new Dictionary<ePiece, int>();
-        hat.Add(ePiece.pawn, 1);
-        hat.Add(ePiece.rook, 1);
-        hat.Add(ePiece.bishop, 1);
-        hat.Add(ePiece.knight, 1);
-        hat.Add(ePiece.queen, 1);
+        hat.Add(ePiece.pawn, 0);
+        hat.Add(ePiece.rook, 0);
+        hat.Add(ePiece.bishop, 0);
+        hat.Add(ePiece.knight, 0);
+        hat.Add(ePiece.queen, 0);
         hat.Add(ePiece.king, 1);
     }
 
-
     private void Update()
     {
-
         SetTilesColor(MovableTile, ColTile.basic);
         if (MovableTile.Count == 0) { MovableTile = GameManager.Instance.board.FindMovableTiles(GetComponent<BoardObj>());}
 
@@ -194,21 +198,25 @@ public class Player : MonoBehaviour
         List<ePiece> myhatList = new List<ePiece>();
         for (int i = 0; i < System.Enum.GetNames(typeof(ePiece)).Length; i++)
         {
-            if(hat[(ePiece)i]==1)
+            if(hat[(ePiece)i]==1 && (ePiece)i!= ePiece.king)
             {
                 myhatList.Add((ePiece)i);
             }
         }
-        
-        if(myhatList.Count !=0)
+        ePiece Value;
+        if (myhatList.Count !=0)
         {
             int random = Random.Range(0, myhatList.Count);
             hat[myhatList[random]] = 0;
+            Value = (ePiece)myhatList[random];
         }
         else
         {
             hat[ePiece.king] = 0;
+            Value = ePiece.king;
         }
+        string name = ePiece.GetName(typeof(ePiece), Value);
+        HatUI.transform.Find(name + "Slot").GetComponent<Image>().color = Color.black;
     }
     bool SwitchHat()
     {
@@ -231,9 +239,13 @@ public class Player : MonoBehaviour
         {
             return false;
         }
+
+
+        ePiece Value = (ePiece)finedType;
+        string name = ePiece.GetName(typeof(ePiece), Value);
+        HatUI.transform.Find("CurPieceSlot").GetComponent<Image>().sprite = ResourceManager.Instance.ImageList[name+".PNG"];
         GetComponent<BoardObj>().Type = (ePiece)finedType;
         FindMovableTile();
-        Debug.Log($" changed :  { (ePiece)finedType }");
         return true;
     }
 
@@ -257,6 +269,8 @@ public class Player : MonoBehaviour
         if (num == 0)
         {
             hat[type] = 1;
+            string name = ePiece.GetName(typeof(ePiece), type);
+            HatUI.transform.Find(name + "Slot").GetComponent<Image>().color = Color.white;
         }
     }
 }

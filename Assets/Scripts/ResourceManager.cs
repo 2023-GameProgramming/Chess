@@ -47,7 +47,7 @@ public class ResourceManager : MonoBehaviour
         new FileInfo("Model", "QueenDark"),
         new FileInfo("Model", "PawnDark"),
         new FileInfo("Model", "PawnLight"),
-        new FileInfo("Model", "KngihtDark"),
+        new FileInfo("Model", "KnightDark"),
         new FileInfo("Model", "RookDark"),
     };
 
@@ -59,6 +59,14 @@ public class ResourceManager : MonoBehaviour
     FileInfo[] Imagefiles =
 {
         new FileInfo("Image", "Main.PNG"),
+        new FileInfo("Image", "bishop.PNG"),
+        new FileInfo("Image", "king.PNG"),
+        new FileInfo("Image", "queen.PNG"),
+        new FileInfo("Image", "pawn.PNG"),
+        new FileInfo("Image", "knight.PNG"),
+        new FileInfo("Image", "rook.PNG"),
+        new FileInfo("Image", "Back.PNG"),
+        new FileInfo("Image", "Front.PNG"),
     };
 
     public IEnumerator LoadImage(Action<float> callback)
@@ -167,7 +175,7 @@ public class ResourceManager : MonoBehaviour
             case ePiece.bishop:
                 return Chessprefab["BishopDark"];
             case ePiece.knight:
-                return Chessprefab["KngihtDark"];  
+                return Chessprefab["KnightDark"];  
             case ePiece.queen:
                 return Chessprefab["QueenDark"];
             case ePiece.king:

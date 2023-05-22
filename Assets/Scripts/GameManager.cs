@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     float progressbar;
     //AudioSource bgm;
 
-    bool Startbattle;
+    int SceneIndex;
 
     #region MonoBehavior
     private void Awake()
@@ -64,28 +64,37 @@ public class GameManager : MonoBehaviour
     {
         mixerGroup = Resources.Load<AudioMixerGroup>("Mixer");
         SceneManager.sceneLoaded += OnSceneLoaded;
-        Startbattle = false;
+        SceneIndex = 0;
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (SceneManager.GetActiveScene().name == "Battle")
         {
+            SceneIndex = 1;
             StartStage();
         }
+        if (SceneManager.GetActiveScene().name == "Main")
+        {
+            SceneIndex = 2;
+        }
     }
+
     void Update()
     {
-        if (Startbattle)
+        if (SceneIndex == 1)
         {
             UpdateGameLogic();
+        }
+        else if (SceneIndex == 2)
+        {
+            // 메인 화면 돌아가기.
         }
     }
 
 
     void StartStage()
     {
-        Startbattle = true;
            //bgm = gameObject.AddComponent<AudioSource>();
            //bgm.clip = ResourceManager.Instance.SoundList["Bgm.mp3"];
            //bgm.Play();
