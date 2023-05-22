@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,12 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    [Range(0.001f, 1.0f)]
+    public float BgmLoud;
+    [Range(0.001f, 1.0f)]
+    public float SELoud;
+
+
     #region SingleTon
     [HideInInspector]
     public static GameManager Instance = null;
@@ -40,10 +47,9 @@ public class GameManager : MonoBehaviour
     GameObject CurrentStage;
 
     [HideInInspector]
-    public AudioMixerGroup mixerGroup;
+    public AudioMixer Mixer;
     float progressbar;
-    //AudioSource bgm;
-
+    AudioSource bgmAudio;
     int SceneIndex;
 
     #region MonoBehavior
@@ -52,7 +58,13 @@ public class GameManager : MonoBehaviour
         if (null == Instance)
         {
             Instance = this;
+            SceneManager.sceneLoaded += OnSceneLoaded;
             DontDestroyOnLoad(this);
+            BgmLoud = 0.5f;
+            SELoud = 1.0f;
+            Mixer = Resources.Load<AudioMixer>("Mixer");
+            Mixer.SetFloat("Bgm", BgmLoud);
+            Mixer.SetFloat("Bgm", SELoud);
         }
         else
         {
@@ -62,8 +74,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        mixerGroup = Resources.Load<AudioMixerGroup>("Mixer");
-        SceneManager.sceneLoaded += OnSceneLoaded;
         SceneIndex = 0;
     }
 
@@ -95,10 +105,11 @@ public class GameManager : MonoBehaviour
 
     void StartStage()
     {
-           //bgm = gameObject.AddComponent<AudioSource>();
-           //bgm.clip = ResourceManager.Instance.SoundList["Bgm.mp3"];
-           //bgm.Play();
-           CurrentStageIndex = -1;
+        bgmAudio = gameObject.AddComponent<AudioSource>();
+        bgmAudio.clip = ResourceManager.Instance.SoundList["Bgm.mp3"];
+        bgmAudio.outputAudioMixerGroup = Mixer.FindMatchingGroups("Bgm")[0];
+        bgmAudio.Play();
+        CurrentStageIndex = -1;
         player = GameObject.Instantiate(Resources.Load<GameObject>("Basic/Player")).GetComponent<Player>();
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
         Cursor.SetCursor(null, screenCenter, CursorMode.Auto);
@@ -170,7 +181,6 @@ public class GameManager : MonoBehaviour
             Attacker.coord = info.obj.GetComponent<BoardObj>().Coord;
             info.obj.GetComponent<BoardObj>().MoveCoord(info.coord);
             info.obj.GetComponent<BoardObj>().ResetTurn();
-
             PlayerAttacked = true;
         }
         else if (PlayerAttacked == false && EnemyAttacked == false)
@@ -187,7 +197,7 @@ public class GameManager : MonoBehaviour
                 List<GameObject> movabletile = board.FindMovableTiles(v.GetComponent<BoardObj>());
                 if (movabletile.Count != 0)
                 {
-                    v.GetComponent<BoardObj>().MoveCoord(movabletile[Random.Range(0, movabletile.Count)].GetComponent<Tile>().Coord);
+                    v.GetComponent<BoardObj>().MoveCoord(movabletile[UnityEngine.Random.Range(0, movabletile.Count)].GetComponent<Tile>().Coord);
                 }
                 v.GetComponent<BoardObj>().ResetTurn();
             }
@@ -255,7 +265,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            //종료화면
+            SceneIndex = 2;
         }
     }
 

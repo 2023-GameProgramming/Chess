@@ -39,12 +39,6 @@ public class Enemies : MonoBehaviour
             boardObj.OnMoveCoord += UpdateDict;
         }
     }
-
-
-
-
-
-
     public void KillEnemy(GameObject obj)
     {
         if (objectDict[obj.GetComponent<BoardObj>().Coord].Equals(obj))

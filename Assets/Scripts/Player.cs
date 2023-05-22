@@ -240,10 +240,14 @@ public class Player : MonoBehaviour
             return false;
         }
 
-
+        if(hat[GetComponent<BoardObj>().Type] == 1)
+        {
+            HatUI.transform.Find(ePiece.GetName(typeof(ePiece), GetComponent<BoardObj>().Type) + "Slot").GetComponent<Image>().color = Color.white;
+        }
         ePiece Value = (ePiece)finedType;
         string name = ePiece.GetName(typeof(ePiece), Value);
         HatUI.transform.Find("CurPieceSlot").GetComponent<Image>().sprite = ResourceManager.Instance.ImageList[name+".PNG"];
+        HatUI.transform.Find(name + "Slot").GetComponent<Image>().color = Color.magenta;
         GetComponent<BoardObj>().Type = (ePiece)finedType;
         FindMovableTile();
         return true;

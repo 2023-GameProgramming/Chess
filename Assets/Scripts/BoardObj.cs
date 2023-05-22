@@ -21,7 +21,7 @@ public class BoardObj :MonoBehaviour
     public int turn;
     [HideInInspector]
     public bool IsMoving;
-
+    public AudioSource MoveAudio;
     public event Action<GameObject, Vector2Int, Vector2Int> OnMoveCoord;
 
     Vector3 startPoint;
@@ -35,6 +35,9 @@ public class BoardObj :MonoBehaviour
         turn = delay;
         IsMoving = false;
         GameObject.Instantiate(ResourceManager.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
+        MoveAudio = gameObject.AddComponent<AudioSource>();
+        MoveAudio.clip = ResourceManager.Instance.SoundList["Move.mp3"];
+        MoveAudio.outputAudioMixerGroup =GameManager.Instance.Mixer.FindMatchingGroups("SE")[0];
     }
     #endregion MonoBehavior
 
@@ -81,8 +84,8 @@ public class BoardObj :MonoBehaviour
     {
         GameManager.Instance.MovingObjNum += 1;
         // 이동이 linear해도 좋고, https://easings.net 를 참고해서 역동적으로 움직여도 좋습니다
-        float elapsedTime = 0f; 
-        while (elapsedTime < movetime) 
+        float elapsedTime = 0f;
+        while (elapsedTime < movetime)
         {
             elapsedTime += Time.deltaTime;
             Vector3 newPos = startPoint + (endPoint - startPoint) / movetime * elapsedTime;
@@ -92,5 +95,10 @@ public class BoardObj :MonoBehaviour
         transform.position = endPoint;
         IsMoving = false;
         GameManager.Instance.MovingObjNum -= 1;
+
+        if (gameObject.name != "temp")
+        {
+            MoveAudio.Play();
+        }
     }
 }

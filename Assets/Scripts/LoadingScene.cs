@@ -53,10 +53,7 @@ public class LoadingScene : MonoBehaviour
         text.text = Totalprogress.ToString();
         if(Totalprogress == 100)
         {
-           SceneManager.LoadScene("Battle");
+           SceneManager.LoadScene("Main");
         }
-
-
-
     }
 }
