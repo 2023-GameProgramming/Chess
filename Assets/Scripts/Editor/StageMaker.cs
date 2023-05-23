@@ -24,8 +24,10 @@ public class StageMaker : EditorWindow
             GameObject obj = new GameObject();
             obj.name = "Resource";
             ResourceManager.Instance = obj.AddComponent<ResourceManager>();
+
         }
-        ResourceManager.Instance.LoadPrefab((progress) =>{});
+        ResourceManager.Instance.LoadPrefabsync();
+       
         active1 = false;
         active2 = false;
         SceneView.duringSceneGui += OnSceneGUI;
@@ -181,6 +183,7 @@ public class StageMaker : EditorWindow
                         sight = boardobj.sight;
                         delay = boardobj.delay;
                         movetime = boardobj.movetime;
+                        SetBoardObjAttr(boardobj);
                         Repaint();
                     }
                 }

@@ -10,7 +10,7 @@ public class LoadingScene : MonoBehaviour
 {
 
     public RawImage bakcgournd;
-    public Text text; 
+    public Slider slider; 
     float Totalprogress;
     float Imgprogress;
     float Soundprogress;
@@ -40,7 +40,7 @@ public class LoadingScene : MonoBehaviour
         {
             Soundprogress = progress;
         }));
-        StartCoroutine(ResourceManager.Instance.LoadPrefab((progress) =>
+        StartCoroutine(ResourceManager.Instance.LoadPrefabAsync((progress) =>
         {
             Prefabprogress = progress;
         }));
@@ -49,9 +49,9 @@ public class LoadingScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Totalprogress = (Imgprogress + Soundprogress + Prefabprogress) / 3 * 100;
-        text.text = Totalprogress.ToString();
-        if(Totalprogress == 100)
+        Totalprogress = (Imgprogress + Soundprogress + Prefabprogress) / 3 ;
+        slider.value = Totalprogress;
+        if(Totalprogress == 1)
         {
            SceneManager.LoadScene("Main");
         }

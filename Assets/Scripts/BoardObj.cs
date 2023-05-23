@@ -27,11 +27,17 @@ public class BoardObj :MonoBehaviour
     Vector3 startPoint;
     Vector3 endPoint;
 
-
+    Animator anim;
+    AnimationClip readyAnim;
     #region MonoBehavior
 
     private void Start()
     {
+        anim = this.gameObject.AddComponent<Animator>();
+        anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Ready");
+        readyAnim = Resources.Load<AnimationClip>("Ready");
+        readyAnim.name = "Ready";
+        readyAnim.wrapMode = WrapMode.Loop; 
         turn = delay;
         IsMoving = false;
         GameObject.Instantiate(ResourceManager.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
@@ -46,6 +52,23 @@ public class BoardObj :MonoBehaviour
     {
         turn = delay;
     }
+
+
+    private void Update()
+    {
+        if (turn == 1)
+        {
+            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Ready"))
+            {
+                anim.Play("Ready");
+            }
+        }
+        else
+        {
+            anim.Play(null);
+        }
+    }
+
     public void DecreaseTurn()
     {
         turn -= 1;
