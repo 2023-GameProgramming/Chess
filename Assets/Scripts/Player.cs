@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
             SetTilesColor(MovableTile, ColTile.movable);
         }
         SetFocusTileColor();
-        if (focusTile != null && Input.GetMouseButtonDown(0) && MovableTile.IndexOf(focusTile)>=0)
+        if (focusTile != null && Input.GetMouseButton(0) && MovableTile.IndexOf(focusTile)>=0)
         {
             if (GetComponent<BoardObj>().Type == ePiece.pawn || GetComponent<BoardObj>().Type == ePiece.king|| GetComponent<BoardObj>().Type == ePiece.knight ||
                 !Input.GetKey(KeyCode.LeftShift))
@@ -132,7 +132,7 @@ public class Player : MonoBehaviour
         }
         Vector3 mousePosition = Input.mousePosition;
         mousePosition += new Vector3(0, mousePosition.y/3, 0);
-       Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         int layerMask = LayerMask.GetMask("Tile");
         if (Input.GetKey(KeyCode.LeftShift) && Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, layerMask))
         {

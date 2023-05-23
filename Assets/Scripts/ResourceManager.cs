@@ -12,6 +12,7 @@ public class ResourceManager : MonoBehaviour
     [HideInInspector]
     public static ResourceManager Instance = null;
 
+
     private void Awake()
     {
         if (null == Instance)
@@ -28,7 +29,7 @@ public class ResourceManager : MonoBehaviour
     public Dictionary<string, GameObject> Chessprefab;
     public Dictionary<string, AudioClip> SoundList;
     public Dictionary<string, Sprite> ImageList;
-    struct FileInfo
+    public struct FileInfo
     {
         public string path;
         public string name;
@@ -39,6 +40,14 @@ public class ResourceManager : MonoBehaviour
             this.name = name;
         }
     }
+    public FileInfo[] StoryLIne =
+    {
+        new FileInfo("0", "감옥에서 일어난 폰은 방 안을 둘러보며 깊은 한숨을 쉬었습니다."),
+        new FileInfo("1", "그 비참한 상황이 여전히 머릿속에 떠오르는 것 같았습니다."),
+        new FileInfo("2", "그러나 그는 절대로 왕의 폭정 아래 더 이상 살 수 없다는 결심을 다지며 고개를 들었습니다."),
+        new FileInfo("3", "왕이여, 이제 그만이다. 너희 폭정에 더 이상 눈감아 줄 수 없다. 내가 이 땅의 평화를 되찾겠다!"),
+        new FileInfo("4", "폰의 모험은 이제 막 시작되었습니다."),
+    };
 
     FileInfo[] AssetChessfiles =
     {
