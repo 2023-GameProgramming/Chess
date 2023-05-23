@@ -105,7 +105,18 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    public IEnumerator LoadPrefab(Action<float> callback)
+
+    public void LoadPrefabsync()
+    {
+        Chessprefab = new Dictionary<string, GameObject>();
+        foreach (var info in AssetChessfiles)
+        {
+            string prefabPath = Path.Combine(info.path, info.name);
+            Chessprefab[info.name] = Resources.Load<GameObject>(prefabPath);
+        }
+    }
+
+    public IEnumerator LoadPrefabAsync(Action<float> callback)
     {
         Chessprefab = new Dictionary<string, GameObject>();
         int count = 0;

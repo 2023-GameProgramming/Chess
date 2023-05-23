@@ -3,7 +3,9 @@ guid: 2c8d8f504b6f73448b0aad6838f45c91
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - MoveAudio: {instanceID: 0}
+  - ReadyAnim: {fileID: 7400000, guid: b6e714ef5f6f1494b9be4ddc2a33a057, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
