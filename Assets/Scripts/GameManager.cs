@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public GameObject StroyObj;
     [Range(0.001f, 1.0f)]
     public float BgmLoud;
     [Range(0.001f, 1.0f)]
     public float SELoud;
-
-
     #region SingleTon
     [HideInInspector]
     public static GameManager Instance = null;
@@ -103,8 +103,53 @@ public class GameManager : MonoBehaviour
     }
 
 
+
+    public IEnumerator ShowStory(bool b)
+    {
+        if(b)
+        {
+            StroyObj.SetActive(true);
+            while (StroyObj.GetComponent<Image>().color.a != 0.9f)
+            {
+                Color value = StroyObj.GetComponent<Image>().color;
+                value.a += Time.deltaTime/2;
+                if (value.a > 0.9f)
+                {
+                    value.a = 0.9f;
+                }
+                StroyObj.GetComponent<Image>().color = value;
+
+                Color value2 = StroyObj.transform.GetChild(0).GetComponent<Text>().color;
+                value2.a = value.a;
+                StroyObj.transform.GetChild(0).GetComponent<Text>().color = value2;
+                yield return null;
+            }
+
+        }
+        else
+        {
+            while (StroyObj.GetComponent<Image>().color.a != 0.0f)
+            {
+                Color value = StroyObj.GetComponent<Image>().color;
+                value.a -= Time.deltaTime/2;
+                if (value.a < 0.0f)
+                {
+                    value.a = 0.0f;
+                }
+                StroyObj.GetComponent<Image>().color = value;
+                Color value2 = StroyObj.transform.GetChild(0).GetComponent<Text>().color;
+                value2.a = value.a;
+                StroyObj.transform.GetChild(0).GetComponent<Text>().color = value2;
+                yield return null;
+            }
+            StroyObj.SetActive(false);
+        }
+
+    }
+
     void StartStage()
     {
+        StroyObj = GameObject.FindWithTag ("Canvas").transform.Find("Story").gameObject;
         bgmAudio = gameObject.AddComponent<AudioSource>();
         bgmAudio.clip = ResourceManager.Instance.SoundList["Bgm.mp3"];
         bgmAudio.outputAudioMixerGroup = Mixer.FindMatchingGroups("Bgm")[0];
