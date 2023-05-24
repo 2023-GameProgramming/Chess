@@ -26,7 +26,7 @@ public class ResourceManager : MonoBehaviour
         }
     }
 
-    public Dictionary<string, GameObject> Chessprefab;
+    public Dictionary<string, GameObject> AssetPrefab;
     public Dictionary<string, AudioClip> SoundList;
     public Dictionary<string, Sprite> ImageList;
     public struct FileInfo
@@ -47,9 +47,22 @@ public class ResourceManager : MonoBehaviour
         new FileInfo("2", "그러나 그는 절대로 왕의 폭정 아래 더 이상 살 수 없다는 결심을 다지며 고개를 들었습니다."),
         new FileInfo("3", "왕이여, 이제 그만이다. 너희 폭정에 더 이상 눈감아 줄 수 없다. 내가 이 땅의 평화를 되찾겠다!"),
         new FileInfo("4", "폰의 모험은 이제 막 시작되었습니다."),
+
+        new FileInfo("5", "당신은 적을 잡으면서, 그 능력을 얻습니다."),
+        new FileInfo("6", "Cirl 키로 전환 할 수 있습니다."),
+        new FileInfo("7", "Shift키는 당신이 갈 수 있는 위치를 보여줄 것입니다."),
+        new FileInfo("8", "Shift키를 누르고 있는 한, 가능한 당신의 턴이 지속됩니다."),
+        new FileInfo("9", "움직임을 보이는 적은 당신을 다음 차례에 공격합니다."),
+
+        new FileInfo("10", "아마도. 많은 전투가 있었고 당신은 셀 수 없이 왕의 수하들을 무찔렀습니다."),
+        new FileInfo("11", "아마도. 당신은 그 과정에서 무고한 시민들의 축복과 지지를 받았습니다."),
+        new FileInfo("12", "이 지루하고도 먼 길을 따라 걷는 당신은 꽤나 지쳤습니다."),
+        new FileInfo("13", "그럼에도 복수의 칼날은 무뎌지지 않았고"),
+        new FileInfo("14", "당신의 심장은 다시 거세게 뛰기 시작합니다."),
+        new FileInfo("15", "이제 도착입니다. 어느 때보다 더욱 각오를 다져야합니다.."),
     };
 
-    FileInfo[] AssetChessfiles =
+    FileInfo[] Assetfiles =
     {
         new FileInfo("Model", "BishopDark"),
         new FileInfo("Model", "KingDark"),
@@ -58,6 +71,7 @@ public class ResourceManager : MonoBehaviour
         new FileInfo("Model", "PawnLight"),
         new FileInfo("Model", "KnightDark"),
         new FileInfo("Model", "RookDark"),
+        new FileInfo("Basic", "GoalFlag"),
     };
 
     FileInfo[] Soundfiles =
@@ -86,7 +100,7 @@ public class ResourceManager : MonoBehaviour
         int count = 0;
         foreach (var info in Imagefiles)
         {
-            string imagePath = Path.Combine(Application.streamingAssetsPath, info.path, info.name);
+            string imagePath = GetUrl(info);
             using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(imagePath))
             {
                 var request = www.SendWebRequest();
@@ -115,27 +129,40 @@ public class ResourceManager : MonoBehaviour
     }
 
 
+
+    public string GetUrl(FileInfo info)
+    {
+        string url = Path.Combine(Application.streamingAssetsPath, Path.Combine(info.path, info.name));
+        if(Application.platform==RuntimePlatform.OSXEditor)
+        {
+            url = "file://" + url;
+        }
+        return url;
+    }
+
+
+
     public void LoadPrefabsync()
     {
-        Chessprefab = new Dictionary<string, GameObject>();
-        foreach (var info in AssetChessfiles)
+        AssetPrefab = new Dictionary<string, GameObject>();
+        foreach (var info in Assetfiles)
         {
             string prefabPath = Path.Combine(info.path, info.name);
-            Chessprefab[info.name] = Resources.Load<GameObject>(prefabPath);
+            AssetPrefab[info.name] = Resources.Load<GameObject>(prefabPath);
         }
     }
 
     public IEnumerator LoadPrefabAsync(Action<float> callback)
     {
-        Chessprefab = new Dictionary<string, GameObject>();
+        AssetPrefab = new Dictionary<string, GameObject>();
         int count = 0;
-        foreach (var info in AssetChessfiles)
+        foreach (var info in Assetfiles)
         {
             string prefabPath = Path.Combine(info.path, info.name);
             ResourceRequest request = Resources.LoadAsync<GameObject>(prefabPath);
             while (!request.isDone)
             {
-                callback((request.progress + count) / AssetChessfiles.Length);
+                callback((request.progress + count) / Assetfiles.Length);
                 yield return null;
 
             }
@@ -144,7 +171,7 @@ public class ResourceManager : MonoBehaviour
             GameObject prefabObj = request.asset as GameObject;
             if (prefabObj != null)
             {
-                Chessprefab[info.name] = prefabObj;
+                AssetPrefab[info.name] = prefabObj;
             }
             else
             {
@@ -160,7 +187,7 @@ public class ResourceManager : MonoBehaviour
         int count = 0;
         foreach (var info in Soundfiles)
         {
-            string audioClipURL = Path.Combine(Application.streamingAssetsPath, Path.Combine(info.path, info.name));
+            string audioClipURL = GetUrl(info);
             using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(audioClipURL, AudioType.UNKNOWN))
             {
 
@@ -191,19 +218,19 @@ public class ResourceManager : MonoBehaviour
         switch (type)
         {
             case ePiece.pawn:
-                return Chessprefab["PawnDark"];
+                return AssetPrefab["PawnDark"];
             case ePiece.rook:
-                return Chessprefab["RookDark"];
+                return AssetPrefab["RookDark"];
             case ePiece.bishop:
-                return Chessprefab["BishopDark"];
+                return AssetPrefab["BishopDark"];
             case ePiece.knight:
-                return Chessprefab["KnightDark"];  
+                return AssetPrefab["KnightDark"];  
             case ePiece.queen:
-                return Chessprefab["QueenDark"];
+                return AssetPrefab["QueenDark"];
             case ePiece.king:
-                return Chessprefab["KingDark"];
+                return AssetPrefab["KingDark"];
             default:
-                return Chessprefab["PawnDark"];
+                return AssetPrefab["PawnDark"];
         }
     }
 }

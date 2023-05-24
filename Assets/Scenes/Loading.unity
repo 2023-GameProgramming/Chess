@@ -293,6 +293,7 @@ MonoBehaviour:
   player: {fileID: 0}
   PlayerTurn: 0
   MovingObjNum: 0
+  CurrentStage: {fileID: 0}
   Mixer: {fileID: 0}
 --- !u!4 &697789870
 Transform:
