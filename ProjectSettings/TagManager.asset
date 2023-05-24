@@ -9,6 +9,9 @@ TagManager:
   - HatUI
   - Story
   - Canvas
+  - Flag
+  - CameraWall
+  - Light
   layers:
   - Default
   - TransparentFX

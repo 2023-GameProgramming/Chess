@@ -65,7 +65,7 @@ public class Player : MonoBehaviour
             SetTilesColor(MovableTile, ColTile.movable);
         }
         SetFocusTileColor();
-        if (focusTile != null && Input.GetMouseButton(0) && MovableTile.IndexOf(focusTile)>=0)
+        if (focusTile != null && Input.GetMouseButton(0)&& Isalive && MovableTile.IndexOf(focusTile)>=0)
         {
             if (GetComponent<BoardObj>().Type == ePiece.pawn || GetComponent<BoardObj>().Type == ePiece.king|| GetComponent<BoardObj>().Type == ePiece.knight ||
                 !Input.GetKey(KeyCode.LeftShift))

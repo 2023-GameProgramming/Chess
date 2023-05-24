@@ -28,16 +28,21 @@ public class BoardObj :MonoBehaviour
     Vector3 endPoint;
 
     Animator anim;
-    AnimationClip readyAnim;
     #region MonoBehavior
 
     private void Start()
     {
-        anim = this.gameObject.AddComponent<Animator>();
-        anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Ready");
-        readyAnim = Resources.Load<AnimationClip>("Ready");
-        readyAnim.name = "Ready";
-        readyAnim.wrapMode = WrapMode.Loop; 
+
+        this.gameObject.TryGetComponent<Animator>(out anim);
+        if(anim == null)
+        {
+            anim = this.gameObject.AddComponent<Animator>();
+            anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("Ready");
+            AnimationClip readyAnim = Resources.Load<AnimationClip>("Ready");
+            readyAnim.name = "Ready";
+            readyAnim.wrapMode = WrapMode.Loop;
+
+        }
         turn = delay;
         IsMoving = false;
         GameObject.Instantiate(ResourceManager.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
@@ -58,9 +63,13 @@ public class BoardObj :MonoBehaviour
     {
         if (turn == 1)
         {
-            if (!anim.GetCurrentAnimatorStateInfo(0).IsName("Ready"))
+            // 애니메이션 상태 정보를 가져옵니다.
+            AnimatorStateInfo stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+            // 현재 애니메이션이 정지 중인지 확인합니다.
+            if (stateInfo.speed == 0f)
             {
-                anim.Play("Ready");
+                // 애니메이션 클립을 재생합니다.
+                anim.Play(0);
             }
         }
         else

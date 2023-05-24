@@ -23,7 +23,7 @@ public class LoadingScene : MonoBehaviour
         Imgprogress = 0;
         Soundprogress = 0;
         Prefabprogress = 0;
-        string imagePath = Path.Combine(Application.streamingAssetsPath, "Image","Main.PNG");
+        string imagePath = ResourceManager.Instance.GetUrl(new ResourceManager.FileInfo( "Image", "Main.PNG"));
         if (File.Exists(imagePath))
         {
             byte[] imageBytes = File.ReadAllBytes(imagePath);

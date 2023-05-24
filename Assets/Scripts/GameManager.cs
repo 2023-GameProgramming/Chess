@@ -9,6 +9,8 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public GameObject StroyObj;
+    GameObject EndingObj;
+    GameObject LightObj;
     [Range(0.001f, 1.0f)]
     public float BgmLoud;
     [Range(0.001f, 1.0f)]
@@ -44,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     bool CheckCapturedEnemy;
     GameObject Caturedenemy;
-    GameObject CurrentStage;
+    public GameObject CurrentStage;
 
     [HideInInspector]
     public AudioMixer Mixer;
@@ -90,66 +92,80 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
+
+    IEnumerator ShowClearScene(bool clear)
+    {
+        EndingObj.SetActive(true);
+        Text text = EndingObj.GetComponentInChildren<Text>();
+        if (clear)
+        {
+            text.text = "해냈다. 만세!";
+        }
+        else
+        {
+            text.text = "아쉽게도 죽어버렸다!";
+        }
+        while (EndingObj.GetComponent<Image>().color.a != 0.9f || !Input.GetMouseButton(0))
+        {
+            Color value = EndingObj.GetComponent<Image>().color;
+            value.a += Time.deltaTime / 1.5f;
+            if (value.a > 0.9f)
+            {
+                value.a = 0.9f;
+            }
+            EndingObj.GetComponent<Image>().color = value;
+            Color value2 = EndingObj.transform.GetChild(0).GetComponent<Text>().color;
+            value2.a = value.a;
+            EndingObj.transform.GetChild(0).GetComponent<Text>().color = value2;
+            yield return null;
+        }
+        EndStage();
+        SceneManager.LoadScene("Main");
+    }
+
     void Update()
     {
         if (SceneIndex == 1)
         {
             UpdateGameLogic();
-        }
-        else if (SceneIndex == 2)
-        {
-            // 메인 화면 돌아가기.
+            //클리어했다면,
+            if (CurrentStageIndex == MaxStageNum)
+            {
+                CurrentStageIndex += 1;
+                StartCoroutine(ShowClearScene(true));
+
+            }
+            else if (!player.Isalive) // 죽었다면 
+            {
+                StartCoroutine(ShowClearScene(false));
+            }
         }
     }
 
-
-
-    public IEnumerator ShowStory(bool b)
-    {
-        if(b)
-        {
-            StroyObj.SetActive(true);
-            while (StroyObj.GetComponent<Image>().color.a != 0.9f)
-            {
-                Color value = StroyObj.GetComponent<Image>().color;
-                value.a += Time.deltaTime/2;
-                if (value.a > 0.9f)
-                {
-                    value.a = 0.9f;
-                }
-                StroyObj.GetComponent<Image>().color = value;
-
-                Color value2 = StroyObj.transform.GetChild(0).GetComponent<Text>().color;
-                value2.a = value.a;
-                StroyObj.transform.GetChild(0).GetComponent<Text>().color = value2;
-                yield return null;
-            }
-
-        }
-        else
-        {
-            while (StroyObj.GetComponent<Image>().color.a != 0.0f)
-            {
-                Color value = StroyObj.GetComponent<Image>().color;
-                value.a -= Time.deltaTime/2;
-                if (value.a < 0.0f)
-                {
-                    value.a = 0.0f;
-                }
-                StroyObj.GetComponent<Image>().color = value;
-                Color value2 = StroyObj.transform.GetChild(0).GetComponent<Text>().color;
-                value2.a = value.a;
-                StroyObj.transform.GetChild(0).GetComponent<Text>().color = value2;
-                yield return null;
-            }
-            StroyObj.SetActive(false);
-        }
-
-    }
 
     void StartStage()
     {
+        LightObj = GameObject.FindWithTag("Light");
+        EndingObj =  GameObject.FindWithTag("Canvas").transform.Find("Ending").gameObject;
+        EndingObj.SetActive(false);
+
+        Color value = EndingObj.GetComponent<Image>().color;
+        value.a = 0;
+        EndingObj.GetComponent<Image>().color = value;
+        value = EndingObj.transform.GetChild(0).GetComponent<Text>().color;
+        value.a = 0;
+        EndingObj.transform.GetChild(0).GetComponent<Text>().color = value;
+
         StroyObj = GameObject.FindWithTag ("Canvas").transform.Find("Story").gameObject;
+        StroyObj.SetActive(false);
+        value = StroyObj.GetComponent<Image>().color;
+        value.a = 0;
+        StroyObj.GetComponent<Image>().color = value;
+        value = StroyObj.transform.GetChild(0).GetComponent<Text>().color;
+        value.a = 0;
+        StroyObj.transform.GetChild(0).GetComponent<Text>().color = value;
+
         bgmAudio = gameObject.AddComponent<AudioSource>();
         bgmAudio.clip = ResourceManager.Instance.SoundList["Bgm.mp3"];
         bgmAudio.outputAudioMixerGroup = Mixer.FindMatchingGroups("Bgm")[0];
@@ -163,6 +179,14 @@ public class GameManager : MonoBehaviour
     }
 
 
+    void EndStage()
+    {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        Cursor.lockState = CursorLockMode.None;
+        bgmAudio.Stop();
+    }
+
+
     void ResetCondition()
     {
         Attacker = new MoveInfo();
@@ -173,11 +197,20 @@ public class GameManager : MonoBehaviour
         EnemyAttacked = false;
         MovingObjNum = 0;
         Caturedenemy = null;
+        StroyObj.SetActive(false);
+        EndingObj.SetActive(false);
+        GameObject[] obj = GameObject.FindGameObjectsWithTag("Flag");
+        foreach(GameObject i in obj)
+        {
+            Destroy(i);
+        }
     }
-
-
     void UpdateGameLogic()
     {
+        if (CurrentStageIndex == MaxStageNum || !player.Isalive)
+        {
+            return;
+        }
         if (player.GetComponent<BoardObj>().turn == 0)
         {
             if (board.GetTile(player.GetComponent<BoardObj>().Coord).GetComponent<Tile>().Type == eTileAttr.goal)
@@ -194,10 +227,6 @@ public class GameManager : MonoBehaviour
                 if (!player.GetComponent<BoardObj>().IsMoving)
                 {
                     HandleAttack();
-                    if (!player.Isalive)
-                    {
-                        Debug.Log("죽음");
-                    }
                 }
                 if (CheckCapturedEnemy)
                 {
@@ -310,7 +339,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            SceneIndex = 2;
+            CurrentStageIndex ++;
         }
     }
 
@@ -332,7 +361,7 @@ public class GameManager : MonoBehaviour
         player.MovableTile.Clear();
         CameraController cameracontroller = Camera.main.GetComponent<CameraController>();
         cameracontroller.target = player.transform;
-
+        LightObj.SetActive(CurrentStageIndex != 0);
     }
     #endregion
 }
