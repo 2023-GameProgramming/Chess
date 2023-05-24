@@ -284,6 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ccf1d25130a19244a6e3e9d6bb27ea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  StroyObj: {fileID: 0}
   BgmLoud: 0
   SELoud: 0
   MaxStageNum: 5
