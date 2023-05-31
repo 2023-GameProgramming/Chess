@@ -80,6 +80,12 @@ public class ResourceManager : MonoBehaviour
         new FileInfo("Sound", "Move.mp3"),
         new FileInfo("Sound", "Click.mp3"),
         new FileInfo("Sound", "OnButton.mp3"),
+        new FileInfo("Sound", "Victory.mp3"),
+        new FileInfo("Sound", "Battle.mp3"),
+
+
+
+
     };
     FileInfo[] Imagefiles =
 {

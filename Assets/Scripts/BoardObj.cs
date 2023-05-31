@@ -18,6 +18,10 @@ public class BoardObj :MonoBehaviour
     public float movetime; // EditInit
     #endregion EditInit
 
+
+    int [] stageIndex;
+
+
     public int turn;
     [HideInInspector]
     public bool IsMoving;
@@ -32,7 +36,7 @@ public class BoardObj :MonoBehaviour
 
     private void Start()
     {
-
+        stageIndex = new int[2];
         this.gameObject.TryGetComponent<Animator>(out anim);
         if(anim == null)
         {
@@ -45,9 +49,10 @@ public class BoardObj :MonoBehaviour
         }
         turn = delay;
         IsMoving = false;
-        GameObject.Instantiate(ResourceManager.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
+        //GameObject.Instantiate(ResourceManager.Instance.GetPiecePrefab(Type)).transform.SetParent(this.transform, false);
         MoveAudio = gameObject.AddComponent<AudioSource>();
         MoveAudio.clip = ResourceManager.Instance.SoundList["Move.mp3"];
+        MoveAudio.volume = 0.3f;
         MoveAudio.outputAudioMixerGroup =GameManager.Instance.Mixer.FindMatchingGroups("SE")[0];
     }
     #endregion MonoBehavior
@@ -114,6 +119,7 @@ public class BoardObj :MonoBehaviour
 
     IEnumerator ChangeTransfrom()
     {
+        stageIndex[0] = GameManager.Instance.CurrentStageIndex;
         GameManager.Instance.MovingObjNum += 1;
         // 이동이 linear해도 좋고, https://easings.net 를 참고해서 역동적으로 움직여도 좋습니다
         float elapsedTime = 0f;
@@ -126,11 +132,38 @@ public class BoardObj :MonoBehaviour
         }
         transform.position = endPoint;
         IsMoving = false;
-        GameManager.Instance.MovingObjNum -= 1;
+
+
+        if(stageIndex[0] == GameManager.Instance.CurrentStageIndex)
+        {
+            GameManager.Instance.MovingObjNum -= 1;
+        }
 
         if (gameObject.name != "temp")
         {
-            MoveAudio.Play();
+            StartCoroutine(PlayMoveSound());
         }
+    }
+
+    IEnumerator PlayMoveSound()
+    {
+        stageIndex[1] = GameManager.Instance.CurrentStageIndex;
+        GameManager.Instance.moveSound += 1;
+        MoveAudio.volume = Mathf.Pow(0.3f,GameManager.Instance.moveSound);
+        if(GameManager.Instance.moveSound == 1)
+        {
+            MoveAudio.volume = 0.3f;
+        }
+        MoveAudio.Play();
+        while(MoveAudio.isPlaying)
+        {
+            yield return null; 
+        }
+        if (stageIndex[1] == GameManager.Instance.CurrentStageIndex)
+        {
+            GameManager.Instance.moveSound -= 1;
+        }
+
+
     }
 }

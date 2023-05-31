@@ -128,7 +128,6 @@ public class Board : MonoBehaviour
         GameObject tile = GetTile(nextcrd);
         if (tile != null)
         {
-
             if(IsTileMovable(nextcrd))
             {
                GameObject nextCrdObj = GameManager.Instance.enemies.GetObj(nextcrd);

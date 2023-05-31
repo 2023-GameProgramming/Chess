@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+
+    public int moveSound; 
+
     public GameObject StroyObj;
     GameObject EndingObj;
     GameObject LightObj;
@@ -21,7 +24,7 @@ public class GameManager : MonoBehaviour
     #endregion
 
     public int MaxStageNum = 5;
-    private int CurrentStageIndex;
+    public int CurrentStageIndex;
 
     [HideInInspector]
     public Enemies enemies;
@@ -51,7 +54,19 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public AudioMixer Mixer;
     float progressbar;
+    
+    
     AudioSource bgmAudio;
+    AudioSource VictoryAudio;
+    AudioSource battleAudio;
+
+    void SoundAllStop()
+    {
+        bgmAudio.Pause();
+        VictoryAudio.Pause();
+        battleAudio.Pause();
+    }
+
     int SceneIndex;
 
     #region MonoBehavior
@@ -62,8 +77,8 @@ public class GameManager : MonoBehaviour
             Instance = this;
             SceneManager.sceneLoaded += OnSceneLoaded;
             DontDestroyOnLoad(this);
-            BgmLoud = 0.5f;
-            SELoud = 1.0f;
+            //BgmLoud = 0.5f;
+            //SELoud = 1.0f;
             Mixer = Resources.Load<AudioMixer>("Mixer");
             Mixer.SetFloat("Bgm", BgmLoud);
             Mixer.SetFloat("Bgm", SELoud);
@@ -132,12 +147,15 @@ public class GameManager : MonoBehaviour
             //클리어했다면,
             if (CurrentStageIndex == MaxStageNum)
             {
+                SoundAllStop();
+                VictoryAudio.Play();
                 CurrentStageIndex += 1;
                 StartCoroutine(ShowClearScene(true));
 
             }
             else if (!player.Isalive) // 죽었다면 
             {
+                SoundAllStop();
                 StartCoroutine(ShowClearScene(false));
             }
         }
@@ -149,7 +167,7 @@ public class GameManager : MonoBehaviour
         LightObj = GameObject.FindWithTag("Light");
         EndingObj =  GameObject.FindWithTag("Canvas").transform.Find("Ending").gameObject;
         EndingObj.SetActive(false);
-
+        moveSound = 0;
         Color value = EndingObj.GetComponent<Image>().color;
         value.a = 0;
         EndingObj.GetComponent<Image>().color = value;
@@ -170,6 +188,19 @@ public class GameManager : MonoBehaviour
         bgmAudio.clip = ResourceManager.Instance.SoundList["Bgm.mp3"];
         bgmAudio.outputAudioMixerGroup = Mixer.FindMatchingGroups("Bgm")[0];
         bgmAudio.Play();
+
+        battleAudio = gameObject.AddComponent<AudioSource>();
+        battleAudio.clip = ResourceManager.Instance.SoundList["Battle.mp3"];
+        battleAudio.outputAudioMixerGroup = Mixer.FindMatchingGroups("Bgm")[0];
+
+
+        VictoryAudio = gameObject.AddComponent<AudioSource>();
+        VictoryAudio.clip = ResourceManager.Instance.SoundList["Victory.mp3"];
+        VictoryAudio.outputAudioMixerGroup = Mixer.FindMatchingGroups("Bgm")[0];
+
+
+
+
         CurrentStageIndex = -1;
         player = GameObject.Instantiate(Resources.Load<GameObject>("Basic/Player")).GetComponent<Player>();
         Vector2 screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
@@ -189,6 +220,7 @@ public class GameManager : MonoBehaviour
 
     void ResetCondition()
     {
+        moveSound = 0;
         Attacker = new MoveInfo();
         PlayerTurn = true;
         ProgressTurn = false;
@@ -207,7 +239,7 @@ public class GameManager : MonoBehaviour
     }
     void UpdateGameLogic()
     {
-        if (CurrentStageIndex == MaxStageNum || !player.Isalive)
+        if (CurrentStageIndex == MaxStageNum || !player.Isalive )
         {
             return;
         }
@@ -226,7 +258,10 @@ public class GameManager : MonoBehaviour
                 PlayerTurn = false;
                 if (!player.GetComponent<BoardObj>().IsMoving)
                 {
-                    HandleAttack();
+                    if(HandleAttack())
+                    {
+                        return;
+                    }
                 }
                 if (CheckCapturedEnemy)
                 {
@@ -300,12 +335,20 @@ public class GameManager : MonoBehaviour
             HandleEnemyBehave();
         }
     }
-    void HandleAttack()
+    bool HandleAttack()
     {
         if (EnemyAttacked)
         {
+            ePiece catured = Caturedenemy.GetComponent<BoardObj>().Type;
             player.CaptureEnemy(Caturedenemy);
+            if (catured == ePiece.king)
+            {
+                Clear();
+                return true;
+            }
             EnemyAttacked = false;
+
+
         }
         if (PlayerAttacked && !Attacker.obj.GetComponent<BoardObj>().IsMoving)
         {
@@ -328,6 +371,7 @@ public class GameManager : MonoBehaviour
             PlayerAttacked = false;
             CheckCapturedEnemy = true;
         }
+        return false;
     }
 
     
@@ -356,12 +400,27 @@ public class GameManager : MonoBehaviour
         enemies.Initialize();
         board = CurrentStage.transform.Find("Tiles").GetComponent<Board>();
         board.Initialize();
+
         player.GetComponent<BoardObj>().turn = player.GetComponent<BoardObj>().delay;
         player.GetComponent<BoardObj>().SetCoord(board.GetStartCoord());
+        
         player.MovableTile.Clear();
         CameraController cameracontroller = Camera.main.GetComponent<CameraController>();
         cameracontroller.target = player.transform;
         LightObj.SetActive(CurrentStageIndex != 0);
+        if(CurrentStageIndex == 2 || CurrentStageIndex == 4)
+        {
+            SoundAllStop();
+            battleAudio.Play();
+        }
+        else
+        {
+            SoundAllStop();
+            bgmAudio.Play();
+        }
     }
+
+
+
     #endregion
 }
