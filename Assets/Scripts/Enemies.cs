@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MoveInfo
@@ -52,9 +53,9 @@ public class Enemies : MonoBehaviour
     }
 
 
-    public void UpdateDict(GameObject obj, Vector2Int oldcrd , Vector2Int newCrd)
+    public void UpdateDict(GameObject obj, Vector2Int oldcrd, Vector2Int newCrd)
     {
-        if(objectDict[oldcrd].Equals(obj))
+        if (objectDict[oldcrd].Equals(obj))
         {
             objectDict[oldcrd] = null;
         }
@@ -67,6 +68,14 @@ public class Enemies : MonoBehaviour
         foreach (BoardObj boardObj in boardObjs)
         {
             boardObj.DecreaseTurn();
+            if (boardObj.Type == ePiece.king)
+            {
+                Vector2Int playerCrd = GameManager.Instance.player.GetComponent<BoardObj>().Coord;
+                if ((playerCrd - boardObj.Coord).magnitude < 2)
+                {
+                    boardObj.turn = 0;
+                }
+            }
         }
     }
 
@@ -104,7 +113,7 @@ public class Enemies : MonoBehaviour
         {
             tempObj.Coord = GameManager.Instance.player.GetComponent<BoardObj>().Coord;
             tempObj.Type = obj.GetComponent<BoardObj>().Type;
-            if(tempObj.Type == ePiece.pawn)
+            if (tempObj.Type == ePiece.pawn)
             {
                 tempObj.GetComponent<Pawn>().dir = obj.GetComponent<Pawn>().dir;
             }
@@ -115,10 +124,10 @@ public class Enemies : MonoBehaviour
             {
                 foreach (var t2 in tiles2)
                 {
-                    if(t1 == t2)
+                    if (t1 == t2)
                     {
                         info.obj = obj;
-                        info.coord =t1.GetComponent<Tile>().Coord;
+                        info.coord = t1.GetComponent<Tile>().Coord;
                         return info;
                     }
                 }
