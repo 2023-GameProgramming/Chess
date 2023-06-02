@@ -4,14 +4,18 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using UnityEngine.Video;
 public class GameStartButton : MonoBehaviour , IPointerEnterHandler
 {
     private AudioSource onButtonAudio;
     private AudioSource ClickAudio;
+    public VideoPlayer videoPlayer;
+    public RawImage video;
+    public RenderTexture render;
     // Start is called before the first frame update
     void Start()
     {
+        video.gameObject.SetActive(false);
         onButtonAudio = this.gameObject.AddComponent<AudioSource>();
         onButtonAudio.clip = ResourceManager.Instance.SoundList["OnButton.mp3"];
         onButtonAudio.outputAudioMixerGroup = GameManager.Instance.Mixer.FindMatchingGroups("SE")[0];
@@ -26,18 +30,45 @@ public class GameStartButton : MonoBehaviour , IPointerEnterHandler
     private void PlayClickSound()
     {
         ClickAudio.Play();
-        StartCoroutine(LoadBattleScene());
+        StartCoroutine(LoadCutScene());
 
     }
 
-    IEnumerator LoadBattleScene()
+    IEnumerator LoadCutScene()
     {
         while (ClickAudio.isPlaying)
         {
           yield return null;
         }
+        videoPlayer.url = ResourceManager.Instance.GetUrl(ResourceManager.Instance.Videofiles[0]);
+        videoPlayer.Play();
+        while(!videoPlayer.isPlaying)
+        {
+           yield return null;
+        }
+        video.gameObject.SetActive(true);
+        StartCoroutine(LoadBattleScene());
+    }
+
+    IEnumerator LoadBattleScene()
+    {
+        float ratio = (float)videoPlayer.width / videoPlayer.height;
+        int targetHeight = 250;
+        int targetWidth = Mathf.RoundToInt(targetHeight * ratio);
+        RenderTexture renderTexture = new RenderTexture(targetWidth, targetHeight, 0);
+        video.texture = renderTexture;
+        videoPlayer.targetTexture = renderTexture;
+        while (videoPlayer.isPlaying)
+        {
+            yield return null;
+        }
         SceneManager.LoadScene("Battle");
     }
+
+
+
+
+
 
     // Update is called once per frame
     void Update()

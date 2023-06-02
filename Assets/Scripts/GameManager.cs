@@ -9,8 +9,8 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
 
-    public int moveSound; 
-
+    public int moveSound;
+    public Slider Slider;
     public GameObject StroyObj;
     GameObject EndingObj;
     GameObject LightObj;
@@ -136,8 +136,27 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         EndStage();
-        SceneManager.LoadScene("Main");
+        if (!Slider.gameObject.active)
+        {
+            StartCoroutine(LoadAsyncScene());
+        }
     }
+
+    IEnumerator LoadAsyncScene()
+    {
+        Slider.gameObject.SetActive(true);
+        AsyncOperation operation =  SceneManager.LoadSceneAsync("Main");
+        while(!operation.isDone)
+        {
+            Slider.value = operation.progress;
+            yield return null;
+        }
+    }
+
+
+
+
+
 
     void Update()
     {
@@ -164,6 +183,9 @@ public class GameManager : MonoBehaviour
 
     void StartStage()
     {
+
+        Slider = GameObject.FindWithTag("LoadingSlider").GetComponent<Slider>();
+        Slider.gameObject.SetActive(false);
         LightObj = GameObject.FindWithTag("Light");
         EndingObj =  GameObject.FindWithTag("Canvas").transform.Find("Ending").gameObject;
         EndingObj.SetActive(false);

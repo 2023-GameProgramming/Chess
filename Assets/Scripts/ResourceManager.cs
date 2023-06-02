@@ -82,10 +82,10 @@ public class ResourceManager : MonoBehaviour
         new FileInfo("Sound", "OnButton.mp3"),
         new FileInfo("Sound", "Victory.mp3"),
         new FileInfo("Sound", "Battle.mp3"),
-
-
-
-
+    };
+   public FileInfo[] Videofiles =
+  {
+        new FileInfo("Video", "Opening.mp4"),
     };
     FileInfo[] Imagefiles =
 {
@@ -100,7 +100,7 @@ public class ResourceManager : MonoBehaviour
         new FileInfo("Image", "Front.PNG"),
     };
 
-    public IEnumerator LoadImage(Action<float> callback)
+public IEnumerator LoadImage(Action<float> callback)
     {
         ImageList = new Dictionary<string, Sprite>();
         int count = 0;

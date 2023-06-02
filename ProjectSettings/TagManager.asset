@@ -12,6 +12,7 @@ TagManager:
   - Flag
   - CameraWall
   - Light
+  - LoadingSlider
   layers:
   - Default
   - TransparentFX

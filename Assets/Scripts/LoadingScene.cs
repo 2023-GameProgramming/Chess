@@ -8,8 +8,6 @@ using UnityEngine.UI;
 
 public class LoadingScene : MonoBehaviour
 {
-
-    public RawImage bakcgournd;
     public Slider slider; 
     float Totalprogress;
     float Imgprogress;
@@ -23,15 +21,6 @@ public class LoadingScene : MonoBehaviour
         Imgprogress = 0;
         Soundprogress = 0;
         Prefabprogress = 0;
-        string imagePath = ResourceManager.Instance.GetUrl(new ResourceManager.FileInfo( "Image", "Main.PNG"));
-        if (File.Exists(imagePath))
-        {
-            byte[] imageBytes = File.ReadAllBytes(imagePath);
-            Texture2D texture = new Texture2D(2, 2);
-            texture.LoadImage(imageBytes);
-            bakcgournd.texture = texture;
-        }
-
         StartCoroutine(ResourceManager.Instance.LoadImage((progress) =>
         {
             Imgprogress = progress;
