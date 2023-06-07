@@ -15975,7 +15975,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC544\uC27D\uAC8C\uB3C4 \uC8FD\uC5B4\uBC84\uB838\uB2E4!"
+  m_Text: Unfortunately, he's dead!
 --- !u!222 &368460911
 CanvasRenderer:
   m_ObjectHideFlags: 0

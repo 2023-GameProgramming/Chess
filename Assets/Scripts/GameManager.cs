@@ -115,11 +115,11 @@ public class GameManager : MonoBehaviour
         Text text = EndingObj.GetComponentInChildren<Text>();
         if (clear)
         {
-            text.text = "해냈다. 만세!";
+            text.text = "I did it. Hurrah!";
         }
         else
         {
-            text.text = "아쉽게도 죽어버렸다!";
+            text.text = "Unfortunately, he's dead!";
         }
         while (EndingObj.GetComponent<Image>().color.a != 0.9f || !Input.GetMouseButton(0))
         {

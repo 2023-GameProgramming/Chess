@@ -42,24 +42,24 @@ public class ResourceManager : MonoBehaviour
     }
     public FileInfo[] StoryLIne =
     {
-        new FileInfo("0", "감옥에서 일어난 폰은 방 안을 둘러보며 깊은 한숨을 쉬었습니다."),
-        new FileInfo("1", "그 비참한 상황이 여전히 머릿속에 떠오르는 것 같았습니다."),
-        new FileInfo("2", "그러나 그는 절대로 왕의 폭정 아래 더 이상 살 수 없다는 결심을 다지며 고개를 들었습니다."),
-        new FileInfo("3", "왕이여, 이제 그만이다. 너희 폭정에 더 이상 눈감아 줄 수 없다. 내가 이 땅의 평화를 되찾겠다!"),
-        new FileInfo("4", "폰의 모험은 이제 막 시작되었습니다."),
+        new FileInfo("0", "Pawn, rising from prison, sighed deeply as he looked around the room."),
+        new FileInfo("1", "The miserable situation still seemed to come into my head."),
+        new FileInfo("2", "But he raised his head, determined that he could never live any longer under the tyranny of the king."),
+        new FileInfo("3", "King, that's enough. I can no longer overlook your tyranny. I will restore the peace of this land!"),
+        new FileInfo("4", "Von's adventure has just begun."),
 
-        new FileInfo("5", "당신은 적을 잡으면서, 그 능력을 얻습니다."),
-        new FileInfo("6", "Cirl 키로 전환 할 수 있습니다."),
-        new FileInfo("7", "Shift키는 당신이 갈 수 있는 위치를 보여줄 것입니다."),
-        new FileInfo("8", "Shift키를 누르고 있는 한, 가능한 당신의 턴이 지속됩니다."),
-        new FileInfo("9", "움직임을 보이는 적은 당신을 다음 차례에 공격합니다."),
+        new FileInfo("5", "You get the ability, catching the enemy."),
+        new FileInfo("6", "You can switch to the Cirl key."),
+        new FileInfo("7", "The Shift key will show you where you can go."),
+        new FileInfo("8", "As long as you press the Shift key, your turn will last as long as possible."),
+        new FileInfo("9", "The enemy who makes a move attacks you next time."),
 
-        new FileInfo("10", "아마도. 많은 전투가 있었고 당신은 셀 수 없이 왕의 수하들을 무찔렀습니다."),
-        new FileInfo("11", "아마도. 당신은 그 과정에서 무고한 시민들의 축복과 지지를 받았습니다."),
-        new FileInfo("12", "이 지루하고도 먼 길을 따라 걷는 당신은 꽤나 지쳤습니다."),
-        new FileInfo("13", "그럼에도 복수의 칼날은 무뎌지지 않았고"),
-        new FileInfo("14", "당신의 심장은 다시 거세게 뛰기 시작합니다."),
-        new FileInfo("15", "이제 도착입니다. 어느 때보다 더욱 각오를 다져야합니다.."),
+        new FileInfo("10", "Perhaps. There were many battles and you defeated the king's men countless times."),
+        new FileInfo("11", "Perhaps. You have received the blessings and support of innocent citizens in the process."),
+        new FileInfo("12", "You're pretty tired of walking along this boring, long road."),
+        new FileInfo("13", "And yet the blade of revenge has not become dull"),
+        new FileInfo("14", "Your heart starts beating hard again."),
+        new FileInfo("15", "We're here now. You have to be more determined than ever.."),
     };
 
     FileInfo[] Assetfiles =
